@@ -1,5 +1,5 @@
 import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from './../prisma/prisma.service';
 import CreateReservationDto from "./dto/create-reservation.dto"
 import { UpdateReservationDto } from './dto/update-reservation.dto';
 import moment from 'moment'
