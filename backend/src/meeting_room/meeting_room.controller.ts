@@ -1,7 +1,7 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
-import { ParseIntPipe } from '@nestjs/common/pipes';
-import MeetingRoomDto from './dto/meetingRoomDto';
-import UpdateMeetingRoomDto from './dto/updateMeetingRoomDto';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UsePipes } from '@nestjs/common';
+import { ParseIntPipe, ValidationPipe } from '@nestjs/common/pipes';
+import CreateMeetingRoomDto from './dto/create-meetingroom.dto';
+import UpdateMeetingRoomDto from './dto/update-meetingroom.dto';
 import { MeetingroomService } from './meeting_room.service';
 
 @Controller('meetingroom')
@@ -14,12 +14,12 @@ export class MeetingroomController {
   }
 
   @Get(':id')
-  getMeetingRoomInfo(@Param('id') id: number) {
+  getMeetingRoomInfo(@Param('id', ParseIntPipe) id: number) {
     return this.meetingroomService.getMeetingRoomInfo(id);
   }
 
   @Post()
-  createMeetingRoom(@Body() meetingRoom: MeetingRoomDto) {
+  createMeetingRoom(@Body() meetingRoom: CreateMeetingRoomDto) {
     return this.meetingroomService.create(meetingRoom);
   }
 

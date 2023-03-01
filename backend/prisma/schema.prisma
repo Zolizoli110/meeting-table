@@ -12,14 +12,14 @@ datasource db {
 
 model Guest {
   guest_email  String        @id @unique
-  is_arranger  Boolean       @default(false)
+  is_arranger  Boolean?      @default(false)
   reservations Reservation[]
 }
 
 model Reservation {
   res_id      Int         @id @default(autoincrement())
   res_name    String
-  room        MeetingRoom @relation(fields: [room_id], references: [room_id])
+  room        MeetingRoom @relation(fields: [room_id], references: [room_id], onDelete: Cascade)
   room_id     Int
   date_start  DateTime
   date_end    DateTime
@@ -31,7 +31,7 @@ model Reservation {
 }
 
 model MeetingRoom {
-  room_id     Int           @id @default(autoincrement())
-  name        String        @unique
-  reservation Reservation[]
+  room_id      Int           @id @default(autoincrement())
+  name         String        @unique
+  reservations Reservation[]
 }
