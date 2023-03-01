@@ -1,30 +1,31 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { ReservationModule } from './../src/reservation/reservation.module';
 
 describe('reservationController E2E Test', () => {
   let app: INestApplication;
-  
+
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [ReservationModule],
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    app.useGlobalPipes(new ValidationPipe)
     await app.init();
   });
 
   const reservation = {
-        "resName": "sprint end",
-        "roomName": "Vonat tárgyaló",
-        "dateStart": "2023-02-16T19:45:00.000Z",
-        "dateEnd": "2023-02-16T19:50:00.000Z",
-        "description": "villamos sprint",
-        "guests": [
-          "zolika.suveges@gmail.com",
-          "daniel.furedi@gmail.com"
-        ]
+    "resName": "sprint end",
+    "roomName": "Vonat tárgyaló",
+    "dateStart": "2023-02-16T19:45:00.000Z",
+    "dateEnd": "2023-02-16T19:50:00.000Z",
+    "description": "villamos sprint",
+    "guests": [
+      "zolika.suveges@gmail.com",
+      "daniel.furedi@gmail.com"
+    ]
   };
   const changedReservation = {
     "resName": "patch",
@@ -40,7 +41,7 @@ describe('reservationController E2E Test', () => {
   }
   let createdReservationBody: any;
 
-  it('/reservation (POST)',() => {
+  it('/reservation (POST)', () => {
     return request(app.getHttpServer())
       .post('/reservation')
       .send(reservation)
@@ -51,7 +52,7 @@ describe('reservationController E2E Test', () => {
       });
   });
 
-  it('/reservation (POST)',() => {
+  it('/reservation (POST)', () => {
     return request(app.getHttpServer())
       .post('/reservation')
       .send(reservation)
@@ -59,7 +60,7 @@ describe('reservationController E2E Test', () => {
   });
 
 
-  it('/reservation (GET)',() => {
+  it('/reservation (GET)', () => {
     return request(app.getHttpServer())
       .get('/reservation')
       .expect(200)
