@@ -6,7 +6,7 @@ import moment from 'moment'
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { response } from 'express';
 import { HttpErrorByCode } from '@nestjs/common/utils/http-error-by-code.util';
-import Errors from 'src/errors';
+import Errors from './../errors';
 
 @Injectable()
 export class ReservationService {
