@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, HttpCode } from '@nestjs/common';
 import { ReservationService } from './reservation.service';
 import CreateReservationDto from './dto/create-reservation.dto';
 import { UpdateReservationDto } from './dto/update-reservation.dto';
@@ -8,6 +8,7 @@ export class ReservationController {
   constructor(private readonly reservationService: ReservationService) { }
 
   @Post()
+  @HttpCode(201)
   create(@Body() createReservationDto: CreateReservationDto) {
     return this.reservationService.create(createReservationDto);
   }
