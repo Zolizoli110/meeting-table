@@ -8,9 +8,7 @@ export default class CreateReservationDto {
     @MaxLength(50)
     resName: string;
 
-    @IsNotEmpty()
-    @IsString()
-    roomName: string;
+    roomId: number;
 
     @IsNotEmpty()
     @IsDate()
@@ -25,4 +23,6 @@ export default class CreateReservationDto {
     @MinLength(5)
     @MaxLength(200)
     description?: string;
+
+    guestEmails?: string[];
 }

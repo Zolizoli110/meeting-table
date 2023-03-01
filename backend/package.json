@@ -17,7 +17,7 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "concurrently \"jest --config ./test/jest-e2e.json \" \"npx prisma migrate reset -f \""
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
@@ -25,7 +25,9 @@
     "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "^9.0.0",
     "@prisma/client": "^4.9.0",
+    "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
+    "concurrently": "^7.6.0",
     "moment": "^2.29.4",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0"
@@ -55,12 +57,22 @@
     "typescript": "^4.7.4"
   },
   "jest": {
+    "roots": [
+      "<rootDir>"
+    ],
+    "modulePaths": [
+      "<rootDir>"
+    ],
+    "moduleDirectories": [
+      "node_modules",
+      "<rootDir>/src"
+    ],
+    "rootDir": "backend",
     "moduleFileExtensions": [
       "js",
       "json",
       "ts"
     ],
-    "rootDir": "src",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
