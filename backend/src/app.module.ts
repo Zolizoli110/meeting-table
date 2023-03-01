@@ -7,11 +7,9 @@ import { APP_PIPE } from '@nestjs/core';
 @Module({
   imports: [MeetingroomModule, ReservationModule, GuestModule],
   controllers: [],
-  providers: [
-    {
-      provide: APP_PIPE,
-      useClass: ValidationPipe,
-    },
-  ],
+  providers: [{
+    provide: APP_PIPE,
+    useClass: ValidationPipe,
+  }],
 })
 export class AppModule { }
