@@ -4,6 +4,4 @@ export class CreateGuestDto {
     @IsEmail()
     @IsString()
     guest_email: string;
-
-    isArranger: boolean;
 }

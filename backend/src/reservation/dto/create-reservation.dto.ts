@@ -1,5 +1,4 @@
-import { Guest, MeetingRoom, Prisma } from "@prisma/client";
-import { IsDate, IsNotEmpty, isString, IsString, MaxLength, MinLength } from "class-validator";
+import { IsDateString, IsEmail, IsNotEmpty, IsString, MaxLength, MinLength } from "class-validator";
 
 export default class CreateReservationDto {
     @IsNotEmpty()
@@ -11,11 +10,11 @@ export default class CreateReservationDto {
     roomId: number;
 
     @IsNotEmpty()
-    @IsDate()
+    @IsDateString()
     dateStart: Date;
 
     @IsNotEmpty()
-    @IsDate()
+    @IsDateString()
     dateEnd: Date;
 
     @IsNotEmpty()
@@ -23,6 +22,9 @@ export default class CreateReservationDto {
     @MinLength(5)
     @MaxLength(200)
     description?: string;
+
+    @IsEmail()
+    arranger_email: string;
 
     guestEmails?: string[];
 }

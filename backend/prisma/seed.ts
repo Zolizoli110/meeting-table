@@ -22,7 +22,6 @@ async function main() {
         data: [
             {
                 guest_email: 'daniel.furedi03@gmail.com',
-                is_arranger: true,
             },
             {
                 guest_email: 'zolika.suveges@gmail.com'
@@ -40,7 +39,8 @@ async function main() {
             date_start: new Date(),
             date_end: new Date(),
             description: 'szokásos daily',
-            guests: { connect: [{ guest_email: 'daniel.furedi03@gmail.com' }, { guest_email: 'zolika.suveges@gmail.com' }, { guest_email: 'arpas.peter@gmail.com' }] }
+            guests: { connect: [{ guest_email: 'daniel.furedi03@gmail.com' }, { guest_email: 'zolika.suveges@gmail.com' }, { guest_email: 'arpas.peter@gmail.com' }] },
+            arranger: { connect: { guest_email: 'daniel.furedi03@gmail.com' } }
         },
     }
     )
