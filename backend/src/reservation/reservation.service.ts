@@ -21,6 +21,7 @@ export class ReservationService {
           date_start: newReservation.dateStart,
           date_end: newReservation.dateEnd,
           description: newReservation.description,
+          arranger: { connect: { guest_email: newReservation.arranger_email } },
           guests: {
             connect: newReservation.guestEmails.map(email => ({ guest_email: email }))
           }
@@ -61,6 +62,7 @@ export class ReservationService {
         date_start: body.dateStart,
         date_end: body.dateEnd,
         description: body.description,
+        arranger: { connect: { guest_email: body.arranger_email } },
         guests: {
           set: [],
           connect: body.guestEmails?.map(email => ({ guest_email: email }))
