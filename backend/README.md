@@ -1,6 +1,6 @@
 Start the application:  
 `npm run start`
-- this will create and start the docker containar
+- this will create and start the docker container
 - then starts the server
   
 To stop the application container:  
