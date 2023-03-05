@@ -3,7 +3,7 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { GuestModule } from './../src/guest/guest.module';
 
-describe('Meeting Room Controller e2e test', () => {
+describe('Guest Controller e2e test', () => {
     let app: INestApplication;
 
     beforeAll(async () => {
@@ -19,11 +19,9 @@ describe('Meeting Room Controller e2e test', () => {
 
     const validGuest = {
         guest_email: "example@gmail.com",
-        is_arranger: false
     }
     const updatedValidGuest = {
         guest_email: "example@gmail.com",
-        is_arranger: true
     }
     const invalidGuest = {
         guest_email: 12

@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { HttpStatus } from '@nestjs/common/enums';
-import { HttpException } from '@nestjs/common/exceptions';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
+import PrismaErrorHandler from './../prisma-errors';
 import { PrismaService } from './../prisma/prisma.service';
 import { CreateGuestDto } from './dto/create-guest.dto';
 import { UpdateGuestDto } from './dto/update-guest.dto';
 
 @Injectable()
 export class GuestService {
-  constructor(private readonly prisma: PrismaService) { }
+  constructor(
+    private readonly prisma: PrismaService
+  ) { }
 
   async create(createGuestDto: CreateGuestDto) {
     try {
@@ -17,11 +17,7 @@ export class GuestService {
       });
       return createdGuest;
     } catch (error) {
-      if (error instanceof PrismaClientKnownRequestError) {
-        if (error.code === 'P2005') {
-          throw new HttpException('invalid type in a field', HttpStatus.BAD_REQUEST);
-        }
-      }
+      throw PrismaErrorHandler(error);
     }
   }
 
@@ -31,33 +27,36 @@ export class GuestService {
   }
 
   async findOne(guest_email: string) {
-    const oneGuest = await this.prisma.guest.findUnique({
-      where: { guest_email }
-    });
-    if (!oneGuest) throw new HttpException('guest doesn\'t exist', HttpStatus.NOT_FOUND)
-    return oneGuest;
+    try {
+      const oneGuest = await this.prisma.guest.findUniqueOrThrow({
+        where: { guest_email }
+      });
+      return oneGuest;
+    } catch (error) {
+      throw PrismaErrorHandler(error);
+    }
   }
 
   async update(guest_email: string, updateGuestDto: UpdateGuestDto) {
-    const guestToBeUpdated = await this.prisma.guest.findUnique({
-      where: { guest_email }
-    });
-    if (!guestToBeUpdated) throw new HttpException('guest doesn\'t exist', HttpStatus.NOT_FOUND);
-    const updatedUser = await this.prisma.guest.update({
-      where: { guest_email },
-      data: { ...updateGuestDto }
-    });
-    return updatedUser;
+    try {
+      const updatedUser = await this.prisma.guest.update({
+        where: { guest_email },
+        data: { ...updateGuestDto }
+      });
+      return updatedUser;
+    } catch (error) {
+      throw PrismaErrorHandler(error);
+    }
   }
 
   async remove(guest_email: string) {
-    const guestToBeDeleted = await this.prisma.guest.findUnique({
-      where: { guest_email }
-    });
-    if (!guestToBeDeleted) throw new HttpException('user doesn\'t exist', HttpStatus.NOT_FOUND)
-    const deletedGuest = await this.prisma.guest.delete({
-      where: { guest_email }
-    });
-    return deletedGuest;
+    try {
+      const deletedGuest = await this.prisma.guest.delete({
+        where: { guest_email }
+      });
+      return deletedGuest;
+    } catch (error) {
+      throw PrismaErrorHandler(error);
+    }
   }
 }
