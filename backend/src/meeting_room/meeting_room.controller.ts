@@ -6,31 +6,33 @@ import { MeetingroomService } from './meeting_room.service';
 
 @Controller('meetingroom')
 export class MeetingroomController {
-  constructor(private readonly meetingroomService: MeetingroomService) { }
+  constructor(
+    private readonly meetingroomService: MeetingroomService
+  ) { }
 
   @Get()
-  getAllMeetingRooms() {
-    return this.meetingroomService.getAllMeetingRooms();
+  getAll() {
+    return this.meetingroomService.getAll();
   }
 
   @Get(':id')
-  getMeetingRoomInfo(@Param('id', ParseIntPipe) id: number) {
-    return this.meetingroomService.getMeetingRoomInfo(id);
+  getOne(@Param('id', ParseIntPipe) id: number) {
+    return this.meetingroomService.getOne(id);
   }
 
   @Post()
-  createMeetingRoom(@Body() meetingRoom: CreateMeetingRoomDto) {
-    return this.meetingroomService.create(meetingRoom);
+  create(@Body() body: CreateMeetingRoomDto) {
+    return this.meetingroomService.create(body);
   }
 
   @Patch(':id')
-  updateMeetingRoomInfo(@Param('id', ParseIntPipe) id: number, @Body() body: UpdateMeetingRoomDto) {
-    return this.meetingroomService.updateMeetingRoom(id, body);
+  update(@Param('id', ParseIntPipe) id: number, @Body() body: UpdateMeetingRoomDto) {
+    return this.meetingroomService.update(id, body);
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.meetingroomService.remove(id);
+  delete(@Param('id', ParseIntPipe) id: number) {
+    return this.meetingroomService.delete(id);
   }
 
 }

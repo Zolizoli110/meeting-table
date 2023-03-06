@@ -5,21 +5,23 @@ import { UpdateGuestDto } from './dto/update-guest.dto';
 
 @Controller('guest')
 export class GuestController {
-  constructor(private readonly guestService: GuestService) { }
-
-  @Post()
-  create(@Body() createGuestDto: CreateGuestDto) {
-    return this.guestService.create(createGuestDto);
-  }
+  constructor(
+    private readonly guestService: GuestService
+  ) { }
 
   @Get()
-  findAll() {
-    return this.guestService.findAll();
+  getAll() {
+    return this.guestService.getAll();
   }
 
   @Get(':email')
-  findOne(@Param('email') email: string) {
-    return this.guestService.findOne(email);
+  getOne(@Param('email') email: string) {
+    return this.guestService.getOne(email);
+  }
+
+  @Post()
+  create(@Body() body: CreateGuestDto) {
+    return this.guestService.create(body);
   }
 
   @Patch(':email')
@@ -28,7 +30,7 @@ export class GuestController {
   }
 
   @Delete(':email')
-  remove(@Param('email') email: string) {
-    return this.guestService.remove(email);
+  delete(@Param('email') email: string) {
+    return this.guestService.delete(email);
   }
 }

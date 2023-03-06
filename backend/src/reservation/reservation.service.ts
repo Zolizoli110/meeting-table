@@ -11,39 +11,39 @@ export class ReservationService {
     private readonly prisma: PrismaService
   ) { }
 
-  async create(newReservation: CreateReservationDto) {
+  async getAll() {
+    const allReservations = await this.prisma.reservation.findMany();
+    return allReservations;
+  }
+
+  async getOne(id: number) {
     try {
-      const createdReservation = await this.prisma.reservation.create({
-        data: {
-          res_name: newReservation.resName,
-          room: { connect: { room_id: newReservation.roomId } },
-          date_start: newReservation.dateStart,
-          date_end: newReservation.dateEnd,
-          description: newReservation.description,
-          arranger: { connect: { guest_email: newReservation.arrangerEmail } },
-          guests: {
-            connect: newReservation.guestEmails.map(email => ({ guest_email: email }))
-          }
-        }
+      const reservation = await this.prisma.reservation.findUniqueOrThrow({
+        where: { res_id: id },
       });
-      return createdReservation;
+      return reservation;
     } catch (error) {
       throw PrismaErrorHandler(error);
     }
 
   }
 
-  async findAll() {
-    const allReservations = await this.prisma.reservation.findMany();
-    return allReservations;
-  }
-
-  async findOne(id: number) {
+  async create(body: CreateReservationDto) {
     try {
-      const reservation = await this.prisma.reservation.findUniqueOrThrow({
-        where: { res_id: id },
+      const createdReservation = await this.prisma.reservation.create({
+        data: {
+          res_name: body.resName,
+          room: { connect: { room_id: body.roomId } },
+          date_start: body.dateStart,
+          date_end: body.dateEnd,
+          description: body.description,
+          arranger: { connect: { guest_email: body.arrangerEmail } },
+          guests: {
+            connect: body.guestEmails.map(email => ({ guest_email: email }))
+          }
+        }
       });
-      return reservation;
+      return createdReservation;
     } catch (error) {
       throw PrismaErrorHandler(error);
     }
@@ -75,7 +75,7 @@ export class ReservationService {
     }
   }
 
-  async remove(id: number) {
+  async delete(id: number) {
     try {
       const deletedReservation = await this.prisma.reservation.delete({
         where: { res_id: id },
