@@ -18,6 +18,6 @@ const PrismaErrorHandler = (error) => {
             return new HttpException('given data is in conflict with existing data', HttpStatus.CONFLICT);
         }
     }
-    return new HttpException(error.message, HttpStatus.I_AM_A_TEAPOT)
+    return new HttpException(error, HttpStatus.I_AM_A_TEAPOT)
 }
 export default PrismaErrorHandler;

@@ -8,11 +8,11 @@ import UpdateMeetingRoomDto from './dto/update-meetingroom.dto';
 export class MeetingroomService {
     constructor(private readonly prisma: PrismaService) { }
 
-    async getAllMeetingRooms() {
+    async getAll() {
         return await this.prisma.meetingRoom.findMany();
     }
 
-    async getMeetingRoomInfo(id: number) {
+    async getOne(id: number) {
         try {
             const meetingRoom = await this.prisma.meetingRoom.findUniqueOrThrow({
                 where: { room_id: id }
@@ -23,12 +23,12 @@ export class MeetingroomService {
         }
     }
 
-    async updateMeetingRoom(id: number, updateData: UpdateMeetingRoomDto) {
+    async update(id: number, body: UpdateMeetingRoomDto) {
         try {
             const meetingRoom = await this.prisma.meetingRoom.update({
                 where: { room_id: id },
                 data: {
-                    ...updateData
+                    ...body
                 }
             });
             return meetingRoom;
@@ -41,7 +41,7 @@ export class MeetingroomService {
         try {
             const createdMeetingRoom = await this.prisma.meetingRoom.create({
                 data: {
-                    name: body.name,
+                    ...body
                 },
             });
             return createdMeetingRoom;
@@ -50,7 +50,7 @@ export class MeetingroomService {
         }
     }
 
-    async remove(id: number) {
+    async delete(id: number) {
         try {
             const deletedMeetingRoom = await this.prisma.meetingRoom.delete({
                 where: { room_id: id }

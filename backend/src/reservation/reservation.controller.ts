@@ -7,20 +7,19 @@ import { UpdateReservationDto } from './dto/update-reservation.dto';
 export class ReservationController {
   constructor(private readonly reservationService: ReservationService) { }
 
-  @Post()
-  @HttpCode(201)
-  create(@Body() createReservationDto: CreateReservationDto) {
-    return this.reservationService.create(createReservationDto);
-  }
-
   @Get()
-  findAll() {
-    return this.reservationService.findAll();
+  getAll() {
+    return this.reservationService.getAll();
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.reservationService.findOne(id);
+  getOne(@Param('id', ParseIntPipe) id: number) {
+    return this.reservationService.getOne(id);
+  }
+
+  @Post()
+  create(@Body() body: CreateReservationDto) {
+    return this.reservationService.create(body);
   }
 
   @Patch(':id')
@@ -29,7 +28,7 @@ export class ReservationController {
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.reservationService.remove(id);
+  delete(@Param('id', ParseIntPipe) id: number) {
+    return this.reservationService.delete(id);
   }
 }
