@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import PrismaErrorHandler from './../prisma-errors';
 import { PrismaService } from '../prisma/prisma.service';
 import CreateMeetingRoomDto from './dto/create-meetingroom.dto';
@@ -6,7 +6,10 @@ import UpdateMeetingRoomDto from './dto/update-meetingroom.dto';
 
 @Injectable()
 export class MeetingroomService {
-    constructor(private readonly prisma: PrismaService) { }
+  logger: Logger;
+    constructor(private readonly prisma: PrismaService) {
+      this.logger = new Logger(MeetingroomService.name);
+    }
 
     async getAll() {
         return await this.prisma.meetingRoom.findMany();

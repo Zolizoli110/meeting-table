@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from './../prisma/prisma.service';
 import CreateReservationDto from "./dto/create-reservation.dto"
 import { UpdateReservationDto } from './dto/update-reservation.dto';
@@ -6,10 +6,13 @@ import PrismaErrorHandler from './../prisma-errors';
 
 @Injectable()
 export class ReservationService {
+  logger: Logger;
 
   constructor(
     private readonly prisma: PrismaService
-  ) { }
+  ) {
+    this.logger = new Logger(ReservationService.name);
+  }
 
   async getAll() {
     const allReservations = await this.prisma.reservation.findMany();
