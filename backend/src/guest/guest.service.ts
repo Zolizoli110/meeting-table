@@ -2,7 +2,6 @@ import { Injectable, Logger } from '@nestjs/common';
 import { HttpStatus } from '@nestjs/common/enums';
 import { HttpException } from '@nestjs/common/exceptions';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
-import { Injectable } from '@nestjs/common';
 import PrismaErrorHandler from './../prisma-errors';
 import { PrismaService } from './../prisma/prisma.service';
 import { CreateGuestDto } from './dto/create-guest.dto';
