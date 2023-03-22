@@ -6,7 +6,9 @@ import { PrismaService } from "src/prisma/prisma.service";
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
-    constructor(private readonly prisma: PrismaService) {
+    constructor(
+        private readonly prisma: PrismaService
+    ) {
         super({
             clientID: config.clientId,
             clientSecret: config.clientSecret,
@@ -14,8 +16,8 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
             scope: ['email', 'profile', 'https://www.googleapis.com/auth/calendar']
         });
     }
-    
-    async validate (
+
+    async validate(
         accesToken: string,
         refreshToken: string,
         profile: any,
@@ -27,7 +29,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
             provider: 'google',
             providerId: id,
             email: emails[0].value,
-            name: `${name.giveName} ${name.familyName}`,
+            name: `${name.givenName} ${name.familyName}`,
             picture: photos[0].value,
         };
 

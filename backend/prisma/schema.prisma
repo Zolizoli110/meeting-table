@@ -10,10 +10,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Guest {
-  guest_email                 String        @id @unique
-  reservations                Reservation[] @relation(name: "guests_of_reservation")
+model User {
+  user_email                  String        @id @unique
+  reservations                Reservation[] @relation(name: "users_of_reservation")
   reservations_where_arranger Reservation[] @relation(name: "arranger_of_reservation")
+  role                        Role          @relation(fields: [role_name], references: [role_name])
+  role_name                   String
 }
 
 model Reservation {
@@ -24,8 +26,8 @@ model Reservation {
   date_start     DateTime
   date_end       DateTime
   description    String?
-  guests         Guest[]     @relation(name: "guests_of_reservation")
-  arranger       Guest       @relation(name: "arranger_of_reservation", fields: [arranger_email], references: [guest_email])
+  users          User[]      @relation(name: "users_of_reservation")
+  arranger       User        @relation(name: "arranger_of_reservation", fields: [arranger_email], references: [user_email])
   arranger_email String
   createdAt      DateTime    @default(now())
 
@@ -36,4 +38,9 @@ model MeetingRoom {
   room_id      Int           @id @default(autoincrement())
   name         String        @unique
   reservations Reservation[]
+}
+
+model Role {
+  role_name String @id @unique
+  users     User[]
 }

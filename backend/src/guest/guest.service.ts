@@ -17,14 +17,14 @@ export class GuestService {
   }
 
   async getAll() {
-    const allGuests = await this.prisma.user.findMany;
+    const allGuests = await this.prisma.user.findMany();
     return allGuests;
   }
 
-  async getOne(guest_email: string) {
+  async getOne(user_email: string) {
     try {
-      const oneGuest = await this.prisma.guest.findUniqueOrThrow({
-        where: { guest_email }
+      const oneGuest = await this.prisma.user.findUniqueOrThrow({
+        where: { user_email }
       });
       return oneGuest;
     } catch (error) {
@@ -34,8 +34,11 @@ export class GuestService {
 
   async create(body: CreateGuestDto) {
     try {
-      const createdGuest = await this.prisma.guest.create({
-        data: { ...body }
+      const createdGuest = await this.prisma.user.create({
+        data: {
+          user_email: body.user_email,
+          role: { connect: { role_name: body.role_name } }
+        }
       });
       return createdGuest;
     } catch (error) {
@@ -43,11 +46,14 @@ export class GuestService {
     }
   }
 
-  async update(guest_email: string, body: UpdateGuestDto) {
+  async update(user_email: string, body: UpdateGuestDto) {
     try {
-      const updatedUser = await this.prisma.guest.update({
-        where: { guest_email },
-        data: { ...body }
+      const updatedUser = await this.prisma.user.update({
+        where: { user_email },
+        data: {
+          user_email: body.user_email,
+          role: { connect: { role_name: body.role_name } }
+        }
       });
       return updatedUser;
     } catch (error) {
@@ -55,10 +61,10 @@ export class GuestService {
     }
   }
 
-  async delete(guest_email: string) {
+  async delete(user_email: string) {
     try {
-      const deletedGuest = await this.prisma.guest.delete({
-        where: { guest_email }
+      const deletedGuest = await this.prisma.user.delete({
+        where: { user_email }
       });
       return deletedGuest;
     } catch (error) {

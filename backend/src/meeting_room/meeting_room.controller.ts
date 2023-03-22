@@ -1,8 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UsePipes } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards, UsePipes } from '@nestjs/common';
 import { ParseIntPipe, ValidationPipe } from '@nestjs/common/pipes';
+import { Roles } from 'src/auth/roles.decorator';
+import { Role } from "@prisma/client";
 import CreateMeetingRoomDto from './dto/create-meetingroom.dto';
 import UpdateMeetingRoomDto from './dto/update-meetingroom.dto';
 import { MeetingroomService } from './meeting_room.service';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('meetingroom')
 export class MeetingroomController {
@@ -11,6 +15,7 @@ export class MeetingroomController {
   ) { }
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   getAll() {
     return this.meetingroomService.getAll();
   }
@@ -21,16 +26,19 @@ export class MeetingroomController {
   }
 
   @Post()
+  @Roles('admin')
   create(@Body() body: CreateMeetingRoomDto) {
     return this.meetingroomService.create(body);
   }
 
   @Patch(':id')
+  @UseGuards(JwtAuthGuard)
   update(@Param('id', ParseIntPipe) id: number, @Body() body: UpdateMeetingRoomDto) {
     return this.meetingroomService.update(id, body);
   }
 
   @Delete(':id')
+  @Roles('admin')
   delete(@Param('id', ParseIntPipe) id: number) {
     return this.meetingroomService.delete(id);
   }

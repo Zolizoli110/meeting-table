@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt'
+import { JwtService } from '@nestjs/jwt';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { Logger } from 'concurrently';
 import { CreateGuestDto } from 'src/guest/dto/create-guest.dto';
@@ -11,44 +11,48 @@ export class AuthService {
     constructor(
         private jwtService: JwtService,
         private readonly prisma: PrismaService
-    ) {}
+    ) { }
+
     generateJwt(payload) {
         return this.jwtService.sign(payload);
     }
 
     async singIn(user) {
-        console.log(user);
 
         if (!user) {
             throw new BadRequestException('Unauthenticated');
         }
 
-        const userExists = await this.prisma.guest.findUnique({
-            where: {guest_email: user.email}
+        const existingUser = await this.prisma.user.findUnique({
+            where: { user_email: user.email }
         });
 
-        if(!userExists) {
-            return this.registerUser({guest_email: user.email});
+        if (!existingUser) {
+            return this.registerUser({ user_email: user.email, role_name: 'guest' });
         }
 
         return this.generateJwt({
-            email: userExists.guest_email,
+            email: existingUser.user_email,
+            role: existingUser.role_name
         })
     }
 
     async registerUser(user: CreateGuestDto) {
         try {
-            const newUser = await this.prisma.guest.create({
-                data: {guest_email: user.guest_email}
+            const newUser = await this.prisma.user.create({
+                data: {
+                    user_email: user.user_email,
+                    role: {
+                        connect: { role_name: 'guest' }
+                    }
+                }
             });
 
             return this.generateJwt({
-                email: newUser.guest_email
+                email: newUser.user_email,
+                role: newUser.role_name
             });
         } catch (error) {
-            if (error instanceof PrismaClientKnownRequestError){
-                console.log()
-            }
             throw PrismaErrorHandler(error);
         }
     }
