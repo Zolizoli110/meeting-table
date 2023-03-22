@@ -5,8 +5,22 @@ const prisma = new PrismaClient();
 async function main() {
     await prisma.reservation.deleteMany();
     await prisma.meetingRoom.deleteMany();
-    await prisma.guest.deleteMany();
+    await prisma.user.deleteMany();
+    await prisma.role.deleteMany();
 
+    const roles = await prisma.role.createMany({
+        data: [
+            {
+                role_name: 'admin'
+            },
+            {
+                role_name: 'guest'
+            },
+            {
+                role_name: 'worker'
+            }
+        ]
+    });
     const rooms = await prisma.meetingRoom.createMany({
         data: [
             {
@@ -14,20 +28,24 @@ async function main() {
 
             },
             {
-                name: 'Troli tárgyaló'
+                name: 'Troli tárgyaló',
+
             }
         ]
     });
-    const guests = await prisma.guest.createMany({
+    const guests = await prisma.user.createMany({
         data: [
             {
-                guest_email: 'daniel.furedi03@gmail.com',
+                user_email: 'daniel.furedi03@gmail.com',
+                role_name: 'admin'
             },
             {
-                guest_email: 'zolika.suveges@gmail.com'
+                user_email: 'zolika.suveges@gmail.com',
+                role_name: 'worker'
             },
             {
-                guest_email: 'arpas.peter@gmail.com'
+                user_email: 'arpas.peter@gmail.com',
+                role_name: 'guest'
             }
         ]
     });
@@ -39,8 +57,8 @@ async function main() {
             date_start: new Date(),
             date_end: new Date(),
             description: 'szokásos daily',
-            guests: { connect: [{ guest_email: 'daniel.furedi03@gmail.com' }, { guest_email: 'zolika.suveges@gmail.com' }, { guest_email: 'arpas.peter@gmail.com' }] },
-            arranger: { connect: { guest_email: 'daniel.furedi03@gmail.com' } }
+            users: { connect: [{ user_email: 'daniel.furedi03@gmail.com' }, { user_email: 'zolika.suveges@gmail.com' }, { user_email: 'arpas.peter@gmail.com' }] },
+            arranger: { connect: { user_email: 'daniel.furedi03@gmail.com' } }
         },
     }
     )

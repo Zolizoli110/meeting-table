@@ -6,6 +6,7 @@ import { config } from '../../config'
 
 export type JwtPayload = {
     email: string;
+    role: string;
 }
 
 @Injectable()
@@ -18,24 +19,25 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
             if (req && req.cookies) {
                 token = req.cookies['access_token'];
             }
-
-            return token || ExtractJwt.fromAuthHeaderAsBearerToken()(req);
+            return token || ExtractJwt.fromAuthHeaderAsBearerToken();
         };
 
         super({
             ignoreExpiration: false,
-            secretOrKey: "akdjfgdghsagdfhsdhfdfagsjdfjafdgjadsjsf",
+            secretOrKey: config.jwtSecret,
             jwtFromRequest: extractJwtFromCookie,
         });
     }
 
     async validate(payload: JwtPayload) {
-        const user = await this.prisma.guest.findUnique({where: {guest_email: payload.email}});
+        console.log(payload + "|||||||||||||||")
+        const user = await this.prisma.user.findUnique({ where: { user_email: payload.email } });
 
         if (!user) throw new UnauthorizedException('Please log in to continue!');
 
         return {
             email: payload.email,
+            role: payload.role
         }
     }
 }

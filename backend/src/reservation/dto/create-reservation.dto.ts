@@ -26,5 +26,5 @@ export default class CreateReservationDto {
     @IsEmail()
     arrangerEmail: string;
 
-    guestEmails?: string[];
+    userEmails?: string[];
 }

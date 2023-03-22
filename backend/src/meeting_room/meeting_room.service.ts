@@ -6,9 +6,9 @@ import UpdateMeetingRoomDto from './dto/update-meetingroom.dto';
 
 @Injectable()
 export class MeetingroomService {
-  logger: Logger;
+    logger: Logger;
     constructor(private readonly prisma: PrismaService) {
-      this.logger = new Logger(MeetingroomService.name);
+        this.logger = new Logger(MeetingroomService.name);
     }
 
     async getAll() {
@@ -26,6 +26,19 @@ export class MeetingroomService {
         }
     }
 
+    async create(body: CreateMeetingRoomDto) {
+        try {
+            const createdMeetingRoom = await this.prisma.meetingRoom.create({
+                data: {
+                    ...body
+                },
+            });
+            return createdMeetingRoom;
+        } catch (error) {
+            throw PrismaErrorHandler(error);
+        }
+    }
+
     async update(id: number, body: UpdateMeetingRoomDto) {
         try {
             const meetingRoom = await this.prisma.meetingRoom.update({
@@ -35,19 +48,6 @@ export class MeetingroomService {
                 }
             });
             return meetingRoom;
-        } catch (error) {
-            throw PrismaErrorHandler(error);
-        }
-    }
-
-    async create(body: CreateMeetingRoomDto) {
-        try {
-            const createdMeetingRoom = await this.prisma.meetingRoom.create({
-                data: {
-                    ...body
-                },
-            });
-            return createdMeetingRoom;
         } catch (error) {
             throw PrismaErrorHandler(error);
         }

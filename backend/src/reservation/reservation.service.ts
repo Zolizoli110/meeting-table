@@ -28,7 +28,6 @@ export class ReservationService {
     } catch (error) {
       throw PrismaErrorHandler(error);
     }
-
   }
 
   async create(body: CreateReservationDto) {
@@ -40,9 +39,9 @@ export class ReservationService {
           date_start: body.dateStart,
           date_end: body.dateEnd,
           description: body.description,
-          arranger: { connect: { guest_email: body.arrangerEmail } },
-          guests: {
-            connect: body.guestEmails.map(email => ({ guest_email: email }))
+          arranger: { connect: { user_email: body.arrangerEmail } },
+          users: {
+            connect: body.userEmails.map(email => ({ user_email: email }))
           }
         }
       });
@@ -62,13 +61,14 @@ export class ReservationService {
           date_start: body.dateStart,
           date_end: body.dateEnd,
           description: body.description,
-          guests: {
+          arranger: { connect: { user_email: body.arrangerEmail } },
+          users: {
             set: [],
-            connect: body.guestEmails?.map(email => ({ guest_email: email }))
+            connect: body.userEmails?.map(email => ({ user_email: email }))
           }
         },
         include: {
-          guests: true,
+          users: true,
         }
       });
       return updatedReservation;
