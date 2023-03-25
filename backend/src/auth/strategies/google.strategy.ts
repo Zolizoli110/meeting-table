@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
 import { Strategy, VerifyCallback } from "passport-google-oauth20";
 import { config } from "src/config";
@@ -13,6 +13,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
             clientID: config.clientId,
             clientSecret: config.clientSecret,
             callbackURL: config.callbackUrl,
+            response_type: 'token',
             scope: ['email', 'profile', 'https://www.googleapis.com/auth/calendar']
         });
     }
