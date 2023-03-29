@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { INestApplication, RequestMethod, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { MeetingroomModule } from '../src/meeting_room/meeting_room.module';
 import CreateMeetingRoomDto from 'src/meeting_room/dto/create-meetingroom.dto';

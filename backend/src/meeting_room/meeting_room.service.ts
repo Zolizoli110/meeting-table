@@ -18,7 +18,8 @@ export class MeetingroomService {
     async getOne(id: number) {
         try {
             const meetingRoom = await this.prisma.meetingRoom.findUniqueOrThrow({
-                where: { room_id: id }
+                where: { room_id: id },
+                include: { reservations: true }
             })
             return meetingRoom;
         } catch (error) {
