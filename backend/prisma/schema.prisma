@@ -37,10 +37,18 @@ model Reservation {
 model MeetingRoom {
   room_id      Int           @id @default(autoincrement())
   name         String        @unique
+  client       Client?
   reservations Reservation[]
+  sync_token   String        @default("")
 }
 
 model Role {
   role_name String @id @unique
   users     User[]
+}
+
+model Client {
+  meetingroom_id Int         @id @unique
+  meetingroom    MeetingRoom @relation(fields: [meetingroom_id], references: [room_id])
+  callback_ip    String      @unique
 }

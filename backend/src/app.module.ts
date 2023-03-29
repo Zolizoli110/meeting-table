@@ -7,9 +7,10 @@ import { LoggerMiddleware } from './logger.middleware';
 import { RolesGuard } from './auth/guards/roles.guard';
 import { AuthModule } from './auth/auth.module';
 import { PassportModule } from '@nestjs/passport';
+import { ApiModule } from './api/api.module';
 
 @Module({
-  imports: [MeetingroomModule, ReservationModule, GuestModule, AuthModule],
+  imports: [MeetingroomModule, ReservationModule, GuestModule, AuthModule, ApiModule],
   controllers: [],
   providers: [
     {
