@@ -7,4 +7,12 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="lime">#99FF1D</color>
+    <color name="darkgreen">#004600</color>
+    <color name="cactusgreen">#4a9700</color>
+    <color name="nemtudokmitkitalalnigreen">#068505</color>
+    <color name="basicred">#ce1029</color>
+    <color name="darkred">#750404</color>
+    <color name="petyored">#A30116</color>
+
 </resources>
