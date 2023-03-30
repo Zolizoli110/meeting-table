@@ -5,13 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
-    android:background="@color/lime">
+    android:background="@color/basicred">
 
     <TextView
         android:id="@+id/currentTime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/darkgreen"
+        android:background="@color/darkred"
         android:gravity="center"
         android:text="Time"
         android:textSize="50sp">
@@ -41,9 +41,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/remainingtimeBox"
         android:layout_centerInParent="true"
-        android:background="@color/darkgreen"
+        android:background="@color/darkred"
         android:text="'Current meeting name'"
         android:textSize="50sp">
+
     </TextView>
 
     <TextView
@@ -52,7 +53,7 @@
         android:layout_height="500sp"
         android:layout_below="@id/currentMeetingNameBox"
         android:layout_centerInParent="true"
-        android:background="@color/cactusgreen"
+        android:background="@color/petyored"
         android:text="Attendees"
         android:textSize="50sp">
 
