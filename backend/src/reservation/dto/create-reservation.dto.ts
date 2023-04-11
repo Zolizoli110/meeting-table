@@ -11,11 +11,11 @@ export default class CreateReservationDto {
 
     @IsNotEmpty()
     @IsDateString()
-    dateStart: Date;
+    dateStart: string;
 
     @IsNotEmpty()
     @IsDateString()
-    dateEnd: Date;
+    dateEnd: string;
 
     @IsNotEmpty()
     @IsString()

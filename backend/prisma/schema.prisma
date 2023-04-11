@@ -48,7 +48,7 @@ model Role {
 }
 
 model Client {
-  meetingroom_id Int         @id @unique
+  meetingroom_id Int         @id
   meetingroom    MeetingRoom @relation(fields: [meetingroom_id], references: [room_id])
-  callback_ip    String      @unique
+  client_id      Int?        @unique
 }

@@ -3,6 +3,7 @@ import { PrismaService } from './../prisma/prisma.service';
 import CreateReservationDto from "./dto/create-reservation.dto"
 import { UpdateReservationDto } from './dto/update-reservation.dto';
 import PrismaErrorHandler from './../prisma-errors';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class ReservationService {
@@ -36,8 +37,8 @@ export class ReservationService {
         data: {
           res_name: body.resName,
           room: { connect: { room_id: body.roomId } },
-          date_start: body.dateStart,
-          date_end: body.dateEnd,
+          date_start: new Date(body.dateStart),
+          date_end: new Date(body.dateEnd),
           description: body.description,
           arranger: { connect: { user_email: body.arrangerEmail } },
           users: {
@@ -47,7 +48,11 @@ export class ReservationService {
       });
       return createdReservation;
     } catch (error) {
-      throw PrismaErrorHandler(error);
+      // throw PrismaErrorHandler(error);
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        console.log(error)
+      }
+      console.log('lol' + error)
     }
 
   }
