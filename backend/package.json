@@ -10,7 +10,7 @@
         "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
         "stop": "docker stop meetingtable-db && docker rm meetingtable-db",
         "stop:test": "docker stop test-db && docker rm test-db",
-        "start": "docker compose -f docker-compose.yml up -d && npx prisma migrate reset -f && nest start",
+        "start": "docker compose -f docker-compose.yml up -d && nest start",
         "start:dev": "docker compose -f docker-compose.yml up -d && npx prisma migrate reset -f && nest start --watch",
         "start:debug": "nest start --debug --watch",
         "start:prod": "node dist/main",
