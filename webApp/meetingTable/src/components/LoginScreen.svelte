@@ -2,11 +2,7 @@
     import axios from "axios";
 
     const googleLogin = () => {
-        axios.get("api/auth/google").catch((err) => {
-            console.log("an error occured: " + err);
-        });
-        console.log("google login");
-
+        axios.get("api/auth/google");
         let form = document.createElement("form");
     };
 </script>

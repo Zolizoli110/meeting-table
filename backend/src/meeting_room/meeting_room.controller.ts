@@ -14,7 +14,7 @@ export class MeetingroomController {
   ) { }
 
   @Get()
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   getAll() {
     return this.meetingroomService.getAll();
   }
