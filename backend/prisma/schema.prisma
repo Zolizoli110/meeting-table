@@ -19,10 +19,10 @@ model User {
 }
 
 model Reservation {
-  res_id         Int         @id @default(autoincrement())
+  res_id         String      @id
   res_name       String
   room           MeetingRoom @relation(fields: [room_id], references: [room_id], onDelete: Cascade)
-  room_id        Int
+  room_id        String
   date_start     DateTime
   date_end       DateTime
   description    String?
@@ -30,16 +30,14 @@ model Reservation {
   arranger       User        @relation(name: "arranger_of_reservation", fields: [arranger_email], references: [user_email])
   arranger_email String
   createdAt      DateTime    @default(now())
-
-  @@unique([room_id, date_start])
 }
 
 model MeetingRoom {
-  room_id      Int           @id @default(autoincrement())
+  room_id      String        @id
   name         String        @unique
   client       Client?
   reservations Reservation[]
-  sync_token   String        @default("")
+  syncToken    String?
 }
 
 model Role {
@@ -47,8 +45,13 @@ model Role {
   users     User[]
 }
 
+model CalendarSync {
+  id        Int    @id @default(0)
+  syncToken String
+}
+
 model Client {
-  meetingroom_id Int         @id
+  meetingroom_id String      @id
   meetingroom    MeetingRoom @relation(fields: [meetingroom_id], references: [room_id])
   client_id      Int?        @unique
 }

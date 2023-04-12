@@ -6,11 +6,12 @@ import { APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { LoggerMiddleware } from './logger.middleware';
 import { RolesGuard } from './auth/guards/roles.guard';
 import { AuthModule } from './auth/auth.module';
-import { PassportModule } from '@nestjs/passport';
+import { CalendarModule } from './calendar/calendar.module';
+import { PrismaModule } from './prisma/prisma.module';
 import { ApiModule } from './api/api.module';
 
 @Module({
-  imports: [MeetingroomModule, ReservationModule, GuestModule, AuthModule, ApiModule],
+  imports: [MeetingroomModule, ReservationModule, GuestModule, AuthModule, CalendarModule, PrismaModule, ApiModule],
   controllers: [],
   providers: [
     {

@@ -15,7 +15,7 @@ export class MeetingroomService {
         return await this.prisma.meetingRoom.findMany();
     }
 
-    async getOne(id: number) {
+    async getOne(id: string) {
         try {
             const meetingRoom = await this.prisma.meetingRoom.findUniqueOrThrow({
                 where: { room_id: id },
@@ -40,7 +40,7 @@ export class MeetingroomService {
         }
     }
 
-    async update(id: number, body: UpdateMeetingRoomDto) {
+    async update(id: string, body: UpdateMeetingRoomDto) {
         try {
             const meetingRoom = await this.prisma.meetingRoom.update({
                 where: { room_id: id },
@@ -54,7 +54,7 @@ export class MeetingroomService {
         }
     }
 
-    async delete(id: number) {
+    async delete(id: string) {
         try {
             const deletedMeetingRoom = await this.prisma.meetingRoom.delete({
                 where: { room_id: id }

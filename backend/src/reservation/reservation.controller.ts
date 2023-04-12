@@ -13,7 +13,7 @@ export class ReservationController {
   }
 
   @Get(':id')
-  getOne(@Param('id', ParseIntPipe) id: number) {
+  getOne(@Param('id') id: string) {
     return this.reservationService.getOne(id);
   }
 
@@ -23,12 +23,12 @@ export class ReservationController {
   }
 
   @Patch(':id')
-  update(@Param('id', ParseIntPipe) id: number, @Body() body: UpdateReservationDto) {
+  update(@Param('id') id: string, @Body() body: UpdateReservationDto) {
     return this.reservationService.update(id, body);
   }
 
   @Delete(':id')
-  delete(@Param('id', ParseIntPipe) id: number) {
+  delete(@Param('id') id: string) {
     return this.reservationService.delete(id);
   }
 }

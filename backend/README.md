@@ -1,3 +1,7 @@
+Our motto:
+"Daily we dare, 'git push --force' we employ,
+In the code we conquer, progress we deploy."
+
 Start the application:  
 `npm run start`
 - this will create and start the docker container
