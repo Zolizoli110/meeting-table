@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { add } from "date-fns";
+import { Prisma } from "@prisma/client"
 
 const prisma = new PrismaClient();
 
@@ -22,18 +22,6 @@ async function main() {
             }
         ]
     });
-    const rooms = await prisma.meetingRoom.createMany({
-        data: [
-            {
-                name: 'Vonat tárgyaló',
-
-            },
-            {
-                name: 'Troli tárgyaló',
-
-            }
-        ]
-    });
     const guests = await prisma.user.createMany({
         data: [
             {
@@ -50,30 +38,7 @@ async function main() {
             }
         ]
     });
-    const reservation1 = await prisma.reservation.create({
-        data:
-        {
-            res_name: 'daily standup - team 1',
-            room: { connect: { name: 'Vonat tárgyaló' } },
-            date_start: new Date(),
-            date_end: add(new Date, { hours: 1 }),
-            description: 'szokásos daily',
-            users: { connect: [{ user_email: 'daniel.furedi03@gmail.com' }, { user_email: 'zolika.suveges@gmail.com' }, { user_email: 'arpas.peter@gmail.com' }] },
-            arranger: { connect: { user_email: 'daniel.furedi03@gmail.com' } }
-        },
-    })
-    const reservation2 = await prisma.reservation.create({
-        data:
-        {
-            res_name: 'sprintzáró',
-            room: { connect: { name: 'Vonat tárgyaló' } },
-            date_start: add(new Date, { minutes: 15 }),
-            date_end: add(new Date, { hours: 1 }),
-            description: 'szokásos daily',
-            users: { connect: [{ user_email: 'daniel.furedi03@gmail.com' }, { user_email: 'zolika.suveges@gmail.com' }, { user_email: 'arpas.peter@gmail.com' }] },
-            arranger: { connect: { user_email: 'daniel.furedi03@gmail.com' } }
-        },
-    })
+
 };
 main()
     .then(async () => {

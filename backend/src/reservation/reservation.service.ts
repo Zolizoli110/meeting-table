@@ -1,18 +1,21 @@
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { Body, HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from './../prisma/prisma.service';
 import CreateReservationDto from "./dto/create-reservation.dto"
 import { UpdateReservationDto } from './dto/update-reservation.dto';
 import PrismaErrorHandler from './../prisma-errors';
-import { Prisma } from '@prisma/client';
+import { CalendarService } from 'src/calendar/calendar.service';
+import { calendar_v3 } from 'googleapis';
 
 @Injectable()
 export class ReservationService {
   logger: Logger;
+  calendarService: CalendarService;
 
   constructor(
     private readonly prisma: PrismaService
   ) {
     this.logger = new Logger(ReservationService.name);
+    this.calendarService = new CalendarService(prisma);
   }
 
   async getAll() {
@@ -20,7 +23,7 @@ export class ReservationService {
     return allReservations;
   }
 
-  async getOne(id: number) {
+  async getOne(id: string) {
     try {
       const reservation = await this.prisma.reservation.findUniqueOrThrow({
         where: { res_id: id },
@@ -31,66 +34,49 @@ export class ReservationService {
     }
   }
 
+
   async create(body: CreateReservationDto) {
-    try {
-      const createdReservation = await this.prisma.reservation.create({
-        data: {
-          res_name: body.resName,
-          room: { connect: { room_id: body.roomId } },
-          date_start: new Date(body.dateStart),
-          date_end: new Date(body.dateEnd),
-          description: body.description,
-          arranger: { connect: { user_email: body.arrangerEmail } },
-          users: {
-            connect: body.userEmails.map(email => ({ user_email: email }))
-          }
-        }
-      });
-      return createdReservation;
-    } catch (error) {
-      // throw PrismaErrorHandler(error);
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        console.log(error)
-      }
-      console.log('lol' + error)
+
+    if (!body.userEmails) {
+      this.calendarService.uploadGoogleEvent(
+        body.roomId,
+        body.dateStart,
+        body.dateEnd,
+        body.resName,
+        body.timeZone,
+        body.description,
+        body.arrangerEmail
+      )
+    } else {
+      this.calendarService.uploadGoogleEvent(
+        body.roomId,
+        body.dateStart,
+        body.dateEnd,
+        body.resName,
+        body.timeZone,
+        body.description,
+        body.arrangerEmail,
+        body.userEmails,
+      )
     }
 
   }
 
-  async update(id: number, body: UpdateReservationDto) {
-    try {
-      const updatedReservation = await this.prisma.reservation.update({
-        where: { res_id: id },
-        data: {
-          res_name: body.resName,
-          date_start: body.dateStart,
-          date_end: body.dateEnd,
-          description: body.description,
-          arranger: { connect: { user_email: body.arrangerEmail } },
-          users: {
-            set: [],
-            connect: body.userEmails?.map(email => ({ user_email: email }))
-          }
-        },
-        include: {
-          users: true,
-        }
-      });
-      return updatedReservation;
-
-    } catch (error) {
-      throw PrismaErrorHandler(error);
-    }
+  async update(id: string, body: UpdateReservationDto) {
+    this.calendarService.updateGoogleEvent(
+      body.roomId,
+      id,
+      body.dateStart,
+      body.dateEnd,
+      body.resName,
+      body.timeZone,
+      body.description,
+      body.arrangerEmail,
+      body.userEmails
+    )
   }
 
-  async delete(id: number) {
-    try {
-      const deletedReservation = await this.prisma.reservation.delete({
-        where: { res_id: id },
-      });
-      return deletedReservation;
-    } catch (error) {
-      throw PrismaErrorHandler(error);
-    }
+  async delete(id: string) {
+    this.calendarService.deleteGoogleEvent(id);
   }
 }

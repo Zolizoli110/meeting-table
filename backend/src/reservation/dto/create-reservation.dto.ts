@@ -1,13 +1,16 @@
-import { IsDateString, IsEmail, IsNotEmpty, IsString, MaxLength, MinLength } from "class-validator";
+import { IsArray, IsDateString, IsEmail, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
 
 export default class CreateReservationDto {
+
     @IsNotEmpty()
     @IsString()
     @MinLength(5)
     @MaxLength(50)
     resName: string;
 
-    roomId: number;
+    @IsNotEmpty()
+    @IsEmail()
+    roomId: string;
 
     @IsNotEmpty()
     @IsDateString()
@@ -19,12 +22,18 @@ export default class CreateReservationDto {
 
     @IsNotEmpty()
     @IsString()
+    timeZone: string;
+
+    @IsString()
     @MinLength(5)
     @MaxLength(200)
     description?: string;
 
     @IsEmail()
-    arrangerEmail: string;
+    @IsOptional()
+    arrangerEmail?: string;
 
+    @IsArray()
+    @IsOptional()
     userEmails?: string[];
 }

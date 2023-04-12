@@ -14,13 +14,13 @@ export class MeetingroomController {
   ) { }
 
   @Get()
-  // @UseGuards(JwtAuthGuard)
+  //@UseGuards(JwtAuthGuard)
   getAll() {
     return this.meetingroomService.getAll();
   }
 
   @Get(':id')
-  getOne(@Param('id', ParseIntPipe) id: number) {
+  getOne(@Param('id') id: string) {
     return this.meetingroomService.getOne(id);
   }
 
@@ -32,13 +32,13 @@ export class MeetingroomController {
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
-  update(@Param('id', ParseIntPipe) id: number, @Body() body: UpdateMeetingRoomDto) {
+  update(@Param('id') id: string, @Body() body: UpdateMeetingRoomDto) {
     return this.meetingroomService.update(id, body);
   }
 
   @Delete(':id')
   @Roles('admin')
-  delete(@Param('id', ParseIntPipe) id: number) {
+  delete(@Param('id') id: string) {
     return this.meetingroomService.delete(id);
   }
 
