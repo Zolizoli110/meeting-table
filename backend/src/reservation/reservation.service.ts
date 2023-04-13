@@ -4,7 +4,6 @@ import CreateReservationDto from "./dto/create-reservation.dto"
 import { UpdateReservationDto } from './dto/update-reservation.dto';
 import PrismaErrorHandler from './../prisma-errors';
 import { CalendarService } from 'src/calendar/calendar.service';
-import { calendar_v3 } from 'googleapis';
 
 @Injectable()
 export class ReservationService {
@@ -40,8 +39,8 @@ export class ReservationService {
     if (!body.userEmails) {
       this.calendarService.uploadGoogleEvent(
         body.roomId,
-        body.dateStart,
-        body.dateEnd,
+        new Date(body.dateStart),
+        new Date(body.dateEnd),
         body.resName,
         body.timeZone,
         body.description,
@@ -50,8 +49,8 @@ export class ReservationService {
     } else {
       this.calendarService.uploadGoogleEvent(
         body.roomId,
-        body.dateStart,
-        body.dateEnd,
+        new Date(body.dateStart),
+        new Date(body.dateEnd),
         body.resName,
         body.timeZone,
         body.description,
@@ -66,8 +65,8 @@ export class ReservationService {
     this.calendarService.updateGoogleEvent(
       body.roomId,
       id,
-      body.dateStart,
-      body.dateEnd,
+      new Date(body.dateStart),
+      new Date(body.dateEnd),
       body.resName,
       body.timeZone,
       body.description,

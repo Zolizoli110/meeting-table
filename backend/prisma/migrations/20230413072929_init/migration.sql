@@ -8,9 +8,9 @@ CREATE TABLE "User" (
 
 -- CreateTable
 CREATE TABLE "Reservation" (
-    "res_id" SERIAL NOT NULL,
+    "res_id" TEXT NOT NULL,
     "res_name" TEXT NOT NULL,
-    "room_id" INTEGER NOT NULL,
+    "room_id" TEXT NOT NULL,
     "date_start" TIMESTAMP(3) NOT NULL,
     "date_end" TIMESTAMP(3) NOT NULL,
     "description" TEXT,
@@ -22,9 +22,9 @@ CREATE TABLE "Reservation" (
 
 -- CreateTable
 CREATE TABLE "MeetingRoom" (
-    "room_id" SERIAL NOT NULL,
+    "room_id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "sync_token" TEXT NOT NULL DEFAULT '',
+    "syncToken" TEXT,
 
     CONSTRAINT "MeetingRoom_pkey" PRIMARY KEY ("room_id")
 );
@@ -37,24 +37,29 @@ CREATE TABLE "Role" (
 );
 
 -- CreateTable
+CREATE TABLE "CalendarSync" (
+    "id" INTEGER NOT NULL DEFAULT 0,
+    "syncToken" TEXT NOT NULL,
+
+    CONSTRAINT "CalendarSync_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "Client" (
-    "meetingroom_id" INTEGER NOT NULL,
-    "callback_ip" TEXT NOT NULL,
+    "meetingroom_id" TEXT NOT NULL,
+    "client_id" INTEGER,
 
     CONSTRAINT "Client_pkey" PRIMARY KEY ("meetingroom_id")
 );
 
 -- CreateTable
 CREATE TABLE "_users_of_reservation" (
-    "A" INTEGER NOT NULL,
+    "A" TEXT NOT NULL,
     "B" TEXT NOT NULL
 );
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_user_email_key" ON "User"("user_email");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Reservation_room_id_date_start_key" ON "Reservation"("room_id", "date_start");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "MeetingRoom_name_key" ON "MeetingRoom"("name");
@@ -63,10 +68,7 @@ CREATE UNIQUE INDEX "MeetingRoom_name_key" ON "MeetingRoom"("name");
 CREATE UNIQUE INDEX "Role_role_name_key" ON "Role"("role_name");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Client_meetingroom_id_key" ON "Client"("meetingroom_id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Client_callback_ip_key" ON "Client"("callback_ip");
+CREATE UNIQUE INDEX "Client_client_id_key" ON "Client"("client_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_users_of_reservation_AB_unique" ON "_users_of_reservation"("A", "B");

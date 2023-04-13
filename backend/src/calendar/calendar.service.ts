@@ -30,14 +30,11 @@ export class CalendarService {
   async calendarListSyncHandler() {
     try {
       let syncToken = await this.getCalendarListSyncToken();
-      console.log(syncToken);
 
       if (!syncToken) {
         await this.fullCalendarListSync();
-        console.log("full sync")
       } else {
         await this.incrementalCalendarListSync(syncToken);
-        console.log("incremental sync")
       }
     } catch (error) {
       if (error.message.includes('Sync token is no longer valid')) {
@@ -52,7 +49,6 @@ export class CalendarService {
     const { data: { items: calendars, nextSyncToken } } = await this.calendarApi.calendarList.list();
 
     this.updateCalendarListSyncToken(nextSyncToken);
-    console.log(calendars)
 
     for await (const calendar of calendars) {
       await this.updateOrCreateCalendar(calendar);
@@ -125,6 +121,8 @@ export class CalendarService {
           name: calendar.summary
         }
       });
+
+      return newCalendar;
     } catch (error) {
       throw PrismaErrorHandler(error);
     }
@@ -153,10 +151,8 @@ export class CalendarService {
 
       if (!syncToken) {
         await this.fullEventSync(calendarId);
-        console.log("Full envent sync")
       } else {
         await this.incrementalEventSync(calendarId, syncToken);
-        console.log("incremental even sync")
       }
 
     } catch (error) {
@@ -205,12 +201,10 @@ export class CalendarService {
     await this.updateEventSyncToken(calendarId, nextSyncToken);
 
     if (!events) {
-      console.log("Already up to date!")
       return "Already up to date!";
     }
 
     for await (const event of events) {
-      console.log(event.status)
       if (event.status == 'cancelled') {
         await this.deleteEvent(event.id);
       } else {
@@ -223,7 +217,6 @@ export class CalendarService {
     try {
       const deleted = await this.prisma.reservation.delete({ where: { res_id: eventId } });
 
-      console.log(deleted)
       return deleted;
     } catch (error) {
       throw PrismaErrorHandler(error);
@@ -270,13 +263,9 @@ export class CalendarService {
           },
         },
       });
-      console.log(newEvent)
-      newEvent;
+      return newEvent;
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        console.log(error)
-      }
-      console.log(error)
+      throw new Error(`Failed to create event: ${error}`);
     }
   }
 
