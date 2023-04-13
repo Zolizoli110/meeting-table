@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpCode, Injectable } from '@nestjs/common';
 import PrismaErrorHandler from 'src/prisma-errors';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { google, calendar_v3 } from 'googleapis';
@@ -188,7 +188,20 @@ export class CalendarService {
     await this.updateEventSyncToken(calendarId, nextSyncToken);
 
     for await (const event of events) {
-      await this.updateOrCreateEvent(calendarId, event);
+      if (!event.recurrence) {
+        await this.updateOrCreateEvent(calendarId, event);
+      } else {
+        const { data: { items: instances, nextSyncToken } } = await this.calendarApi.events.instances({
+          calendarId,
+          eventId: event.id
+        });
+
+        await this.updateEventSyncToken(calendarId, nextSyncToken);
+
+        for await (const instance of instances) {
+          await this.updateOrCreateEvent(calendarId, instance);
+        }
+      }
     }
   }
 
@@ -201,14 +214,32 @@ export class CalendarService {
     await this.updateEventSyncToken(calendarId, nextSyncToken);
 
     if (!events) {
-      return "Already up to date!";
+      return "Already up to date";
     }
 
     for await (const event of events) {
-      if (event.status == 'cancelled') {
-        await this.deleteEvent(event.id);
+      if (!event.recurrence) {
+        if (event.status == 'cancelled') {
+          await this.deleteEvent(event.id);
+        } else {
+          await this.updateOrCreateEvent(calendarId, event);
+        }
       } else {
-        await this.updateOrCreateEvent(calendarId, event);
+        const { data: { items: instances, nextSyncToken } } = await this.calendarApi.events.instances({
+          calendarId,
+          eventId: event.id
+        });
+
+        this.updateEventSyncToken(calendarId, nextSyncToken);
+
+
+        for await (const instance of instances) {
+          if (instance.status == 'cancelled') {
+            await this.deleteEvent(instance.id);
+          } else {
+            await this.updateOrCreateEvent(calendarId, instance);
+          }
+        }
       }
     }
   }
