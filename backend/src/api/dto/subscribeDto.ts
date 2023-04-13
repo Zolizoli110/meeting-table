@@ -1,4 +1,4 @@
-import { IsIP, IsNumber, IsString } from "class-validator";
+import { IsIP, IsNumber } from "class-validator";
 
 export class subscribeDto {
     @IsNumber()

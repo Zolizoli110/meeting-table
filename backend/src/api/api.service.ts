@@ -1,9 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Response } from 'express';
-import { connect } from 'http2';
-import PrismaErrorHandler from '../prisma-errors';
 import { PrismaService } from '../prisma/prisma.service';
-import { subscribeDto } from './dto/subscribeDto';
 
 @Injectable()
 export class ApiService {

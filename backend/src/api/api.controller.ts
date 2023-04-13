@@ -1,8 +1,7 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post, Query, Res } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, Post, Query, Res } from '@nestjs/common';
 import { Response } from 'express-serve-static-core';
 import { PrismaService } from '../prisma/prisma.service';
 import { ApiService } from './api.service';
-import { subscribeDto } from './dto/subscribeDto';
 
 @Controller('api')
 export class ApiController {
