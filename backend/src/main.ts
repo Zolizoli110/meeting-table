@@ -14,12 +14,7 @@ async function bootstrap() {
       { path: "/", method: RequestMethod.ALL }
     ]
   })
-  app.setGlobalPrefix("api/", {
-    exclude: [
-      { path: "/", method: RequestMethod.ALL }
-    ]
-  })
-  app.useGlobalPipes(new ValidationPipe({
+ app.useGlobalPipes(new ValidationPipe({
     transform: true
   }));
 

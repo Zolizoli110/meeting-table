@@ -2,7 +2,6 @@ import { HttpCode, Injectable } from '@nestjs/common';
 import PrismaErrorHandler from 'src/prisma-errors';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { google, calendar_v3 } from 'googleapis';
-import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class CalendarService {
@@ -315,7 +314,9 @@ export class CalendarService {
     timeZone: string,
     description?: string,
     organizer?: calendar_v3.Schema$EventAttendee,
-    attendees?: string[]): Promise<calendar_v3.Schema$Event> {
+    attendees?: string[],
+    recurrence?: string[]
+  ): Promise<calendar_v3.Schema$Event> {
 
     const googleAttendees = this.createAttendees(attendees);
 
@@ -332,10 +333,89 @@ export class CalendarService {
           resource: true
         }
       ],
+      recurrence
     };
 
     return newEvent;
 
+  }
+
+  private buildRecurrenceRule(
+    frequency?: string,
+    interval?: number,
+    count?: number,
+    until?: Date,
+    byDay?: string[],
+    byMonth?: number[],
+    byMonthDay?: number[],
+  ) {
+    const ruleObj = {
+      FREQ: frequency ? frequency.toUpperCase() : '',
+      INTERVAL: interval > 0 ? interval : '',
+      COUNT: count > 0 ? count : '',
+      UNTIL: until ? until.toISOString().replace(/[-:.]/g, '').split('T')[0] : '',
+      BYDAY: byDay.length > 0 ? byDay.join(',') : '',
+      BYMONTHDAY: byMonthDay.length > 0 ? byMonthDay.join(',') : '',
+      BYMONTH: byMonth.length > 0 ? byMonth.join(',') : ''
+    };
+
+    const recurranceRule = Object.entries(ruleObj)
+      .filter(([_, value]) => value)
+      .map(([key, value]) => `${key}=${value}`)
+      .join(';');
+
+    return recurranceRule ? [`RRULE:${recurranceRule}`] : [];
+  }
+
+  private makeRecurranceRules(
+    RRULE_frequency?: string,
+    RRULE_until?: Date,
+    RRULE_count?: number,
+    RRULE_interval?: number,
+    RRULE_byDay?: string[],
+    RRULE_byMonth?: number[],
+    RRULE_byMonthDay?: number[],
+    EXRULE_frequency?: string,
+    EXRULE_count?: number,
+    EXRULE_until?: Date,
+    EXRULE_interval?: number,
+    EXRULE_byDay?: string[],
+    EXRULE_byMonth?: number[],
+    EXRULE_byMonthDay?: number[],
+    RDATE_date?: Date[],
+    EXDATE_date?: Date[]
+  ): string[] | undefined {
+    const rrule = this.buildRecurrenceRule(
+      RRULE_frequency,
+      RRULE_interval,
+      RRULE_count,
+      RRULE_until,
+      RRULE_byDay,
+      RRULE_byMonthDay,
+      RRULE_byMonth
+    );
+
+    const exrule = this.buildRecurrenceRule(
+      EXRULE_frequency,
+      EXRULE_interval,
+      EXRULE_count,
+      EXRULE_until,
+      EXRULE_byDay,
+      EXRULE_byMonthDay,
+      EXRULE_byMonth,
+    );
+
+    const rdate = RDATE_date
+      ? RDATE_date.map((date) => `RDATE;VALUE=DATE:${date.toISOString().split('T')[0].replace(/-/g, '')}`)
+      : [];
+
+    const exdate = EXDATE_date.map((date) => `EXDATE;VALUE=DATE:${date.toISOString().split('T')[0].replace(/-/g, '')}`)
+
+    let rules = undefined;
+
+    rules = [...rrule, ...exrule, ...rdate, exdate];
+
+    return rules ? rules : undefined;
   }
 
   async uploadGoogleEvent(
@@ -346,8 +426,43 @@ export class CalendarService {
     timeZone: string,
     description?: string,
     organizer?: string,
-    attendee?: string[]) {
+    attendee?: string[],
+    RRULE_frequency?: string, //HOURLY,DAILY,WEEKLY,MONTHLY,YEARLY
+    RRULE_until?: Date,
+    RRULE_count?: number,
+    RRULE_interval?: number,
+    RRULE_byDay?: string[], //MO,TU,WE,TH,FR,SA,SU //first, second, second-to-last, last of the month 1,2,-2,-1 //syntax: 1WE
+    RRULE_byMonth?: number[], // 1-12
+    RRULE_byMonthDay?: number[], // 1-31
+    EXRULE_frequency?: string,
+    EXRULE_count?: number,
+    EXRULE_until?: Date,
+    EXRULE_interval?: number,
+    EXRULE_byDay?: string[],
+    EXRULE_byMonth?: number[],
+    EXRULE_byMonthDay?: number[],
+    RDATE_date?: Date[],
+    EXDATE_date?: Date[]
+  ) {
     try {
+      const rrule = this.makeRecurranceRules(
+        RRULE_frequency,
+        RRULE_until,
+        RRULE_count,
+        RRULE_interval,
+        RRULE_byDay,
+        RRULE_byMonth,
+        RRULE_byMonthDay,
+        EXRULE_frequency,
+        EXRULE_count,
+        EXRULE_until,
+        EXRULE_interval,
+        EXRULE_byDay,
+        EXRULE_byMonth,
+        EXRULE_byMonthDay,
+        RDATE_date,
+        EXDATE_date
+      );
       const newOrganizer = await this.convertOrganizer(organizer);
       const newEvent = await this.createGoogleEvent(
         calendarId,
