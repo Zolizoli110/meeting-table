@@ -3,12 +3,15 @@ import PrismaErrorHandler from './../prisma-errors';
 import { PrismaService } from '../prisma/prisma.service';
 import CreateMeetingRoomDto from './dto/create-meetingroom.dto';
 import UpdateMeetingRoomDto from './dto/update-meetingroom.dto';
+import { CalendarService } from 'src/calendar/calendar.service';
 
 @Injectable()
 export class MeetingroomService {
     logger: Logger;
+    calendarService: CalendarService;
     constructor(private readonly prisma: PrismaService) {
         this.logger = new Logger(MeetingroomService.name);
+        this.calendarService = new CalendarService(prisma);
     }
 
     async getAll() {
@@ -27,17 +30,8 @@ export class MeetingroomService {
         }
     }
 
-    async create(body: CreateMeetingRoomDto) {
-        try {
-            const createdMeetingRoom = await this.prisma.meetingRoom.create({
-                data: {
-                    ...body
-                },
-            });
-            return createdMeetingRoom;
-        } catch (error) {
-            throw PrismaErrorHandler(error);
-        }
+    async create(calendarId: string) {
+        this.calendarService.subscribeToCalendar(calendarId);
     }
 
     async update(id: string, body: UpdateMeetingRoomDto) {
@@ -54,15 +48,7 @@ export class MeetingroomService {
         }
     }
 
-    async delete(id: string) {
-        try {
-            const deletedMeetingRoom = await this.prisma.meetingRoom.delete({
-                where: { room_id: id }
-            });
-            return deletedMeetingRoom;
-        } catch (error) {
-            throw PrismaErrorHandler(error);
-        }
-
+    async delete(calendarId: string) {
+        this.calendarService.unsubscribeFromCalendar(calendarId);
     }
 }

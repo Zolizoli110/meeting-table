@@ -12,6 +12,8 @@ export class CalendarService {
     });
   }
 
+  //-----SERVICE_ACCOUNT-----\\
+
   private async initializeGoogleAuth() {
     const auth = new google.auth.GoogleAuth({
       keyFile: '/home/zolizoli110/meeting-table/backend/meeting-table-377209-3ca66e761039.json',
@@ -21,6 +23,18 @@ export class CalendarService {
     const client = await auth.getClient();
     google.options({ auth: client });
     return client;
+  }
+
+  async subscribeToCalendar(calendarId: string) {
+    await this.calendarApi.calendarList.insert({
+      requestBody: { id: calendarId }
+    });
+    this.calendarListSyncHandler();
+  }
+
+  async unsubscribeFromCalendar(calendarId: string) {
+    await this.calendarApi.calendarList.delete({ calendarId });
+    this.calendarListSyncHandler();
   }
 
 
