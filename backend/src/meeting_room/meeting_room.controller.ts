@@ -27,7 +27,7 @@ export class MeetingroomController {
   @Post()
   @Roles('admin')
   create(@Body() body: CreateMeetingRoomDto) {
-    return this.meetingroomService.create(body);
+    return this.meetingroomService.create(body.room_id);
   }
 
   @Patch(':id')

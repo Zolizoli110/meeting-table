@@ -5,8 +5,4 @@ export default class CreateMeetingRoomDto {
     @IsNotEmpty()
     @IsString()
     room_id: string;
-
-    @IsNotEmpty()
-    @IsString()
-    name: string;
 }
