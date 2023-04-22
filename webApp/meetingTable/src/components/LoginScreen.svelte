@@ -1,9 +1,11 @@
 <script lang="ts">
     import axios from "axios";
+    import { loggedInUser } from "../stores/api.store";
 
-    const googleLogin = () => {
-        axios.get("api/auth/google");
-        let form = document.createElement("form");
+    const googleLogin = async () => {
+        const res = await axios({
+            url: "http://localhost:3000/api/auth/google",
+        });
     };
 </script>
 

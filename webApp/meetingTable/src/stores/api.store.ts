@@ -1,8 +1,12 @@
 import axios from "axios";
 import { derived, readable, writable, type Readable } from "svelte/store";
-import type { currentDataType, MeetingRoom, MeetingRoomStore, Reservation, UserStore } from "../types";
+import type { currentDataType, MeetingRoom, MeetingRoomStore, Reservation, User, UserStore } from "../types";
 
 export const meetingRooms: MeetingRoomStore = writable([]);
+
+const storedUser = localStorage.getItem('user_info');
+const initialUser = storedUser ? JSON.parse(storedUser) : undefined;
+export const loggedInUser = writable(initialUser);
 
 const createEventStore = () => {
     const { subscribe, update, set } = writable<Reservation>(undefined);

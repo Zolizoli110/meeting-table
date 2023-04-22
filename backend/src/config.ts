@@ -1,7 +1,7 @@
 import { config as loadEnv } from 'dotenv';
 loadEnv();
 
-export type EnvVals = 'dev'|'prod';
+export type EnvVals = 'dev' | 'prod';
 
 export type Config = {
   jwtSecret: string,
@@ -16,7 +16,6 @@ function readVal<T>(key: string, caster: (x: string) => T, fallback: T | undefin
     if (fallback == undefined)
       throw new Error(`Configuration key '${key}' not found in process environment.`); // halt and catch fire
     else {
-      console.log(`Using fallback value for configuration key '${key}'`);
       return fallback;
     }
 
@@ -26,7 +25,7 @@ function readVal<T>(key: string, caster: (x: string) => T, fallback: T | undefin
 
 export const config: Config = {
   jwtSecret: readVal('JWT_SECRET', String),
-  env: readVal('ENV', String , 'prod'),
+  env: readVal('ENV', String, 'prod'),
   callbackUrl: readVal('CALLBACK_URL', String),
   clientId: readVal('CLIENT_ID', String),
   clientSecret: readVal('CLIENT_SECRET', String),

@@ -17,10 +17,6 @@ import { ApiModule } from './api/api.module';
     {
       provide: APP_PIPE,
       useClass: ValidationPipe,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: RolesGuard
     }]
 })
 export class AppModule implements NestModule {

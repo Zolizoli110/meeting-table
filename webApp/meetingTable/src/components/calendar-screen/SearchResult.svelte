@@ -3,6 +3,7 @@
     import type { User } from "../../types";
 
     export let data: User;
+    export let onAddAction: (data: User) => void;
 </script>
 
 <li>
@@ -12,8 +13,8 @@
         </div>
         <button
             type="button"
-            on:click={() => {
-                $addedAttendees = [...$addedAttendees, data];
+            on:click={(e) => {
+                onAddAction(data);
             }}>+</button
         >
     </div>

@@ -19,9 +19,9 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
             if (req && req.cookies) {
                 token = req.cookies['access_token'];
             }
-            return token || ExtractJwt.fromAuthHeaderAsBearerToken();
+            const headerToken = ExtractJwt.fromAuthHeaderAsBearerToken()(req);
+            return token || headerToken;
         };
-
         super({
             ignoreExpiration: false,
             secretOrKey: config.jwtSecret,
@@ -30,11 +30,8 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     }
 
     async validate(payload: JwtPayload) {
-        console.log(payload + "|||||||||||||||")
         const user = await this.prisma.user.findUnique({ where: { user_email: payload.email } });
-
-        if (!user) throw new UnauthorizedException('Please log in to continue!');
-
+        if (!user) throw new UnauthorizedException('please log in')
         return {
             email: payload.email,
             role: payload.role

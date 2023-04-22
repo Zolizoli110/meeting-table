@@ -10,7 +10,6 @@ export class ApiService {
     async handleClients(response: Response, client_id: number, roomId: number) {
         // adds the client and it's connection to in-memory storage
         this.clients.push({ client_id, response, roomId });
-        console.log(this.clients.map(({ client_id, roomId }) => ({ client_id, roomId })));
 
         // when a tablet disconnects from the NFC docker
         response.on('close', async () => {

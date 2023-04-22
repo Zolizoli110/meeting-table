@@ -19,7 +19,6 @@ const PrismaErrorHandler = (error) => {
             case PrismaErrors.UNIQUE_CONTRAINT_FAILED:
                 return new HttpException('given data is in conflict with existing data', HttpStatus.CONFLICT);
             case PrismaErrors.RELATION_VIOLATION:
-                console.log(error)
                 return new HttpException('data already exists for specified record', HttpStatus.BAD_REQUEST)
             default:
                 return new HttpException('an unknown error occured, please try again later', HttpStatus.I_AM_A_TEAPOT)

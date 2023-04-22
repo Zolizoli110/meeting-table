@@ -16,6 +16,7 @@ export interface User {
     reservationsWhereArranger: Reservation[];
     role_name: string;
     searchTerms: string;
+    jwt?: string;
 }
 
 export type MeetingRoom = {

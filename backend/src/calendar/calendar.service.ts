@@ -16,7 +16,7 @@ export class CalendarService {
 
   private async initializeGoogleAuth() {
     const auth = new google.auth.GoogleAuth({
-      keyFile: '/home/zolizoli110/meeting-table/backend/meeting-table-377209-3ca66e761039.json',
+      keyFile: 'C:/prog/meeting-table/backend/meeting-table-377209-3ca66e761039.json',
       scopes: ['https://www.googleapis.com/auth/calendar'],
     });
 
