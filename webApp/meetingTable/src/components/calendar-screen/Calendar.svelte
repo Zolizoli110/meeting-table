@@ -1,11 +1,9 @@
 <script lang="ts">
-    // @ts-ignore
+    // @ts-nocheck
     import Calendar from "@event-calendar/core";
-    // @ts-ignore
+    import List from "@event-calendar/list";
     import TimeGrid from "@event-calendar/time-grid";
-    // @ts-ignore
     import DayGrid from "@event-calendar/day-grid";
-    // @ts-ignore
     import axios from "axios";
     import type { MeetingRoom } from "../../types";
     import {

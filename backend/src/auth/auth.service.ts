@@ -17,7 +17,7 @@ export class AuthService {
         return this.jwtService.sign(payload);
     }
 
-    async singIn(user) {
+    async signIn(user) {
 
         if (!user) {
             throw new BadRequestException('Unauthenticated');

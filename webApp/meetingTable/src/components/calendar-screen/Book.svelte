@@ -6,8 +6,9 @@
         users,
         events,
     } from "../../stores/api.store";
-    import type { MeetingRoom, Reservation } from "../../types";
+    import type { MeetingRoom, Reservation, User } from "../../types";
     import SearchBar from "./SearchBar.svelte";
+    import { HttpStatusHandler } from "../../utils/errorHandler";
 
     let times: string[] = [];
 
@@ -56,11 +57,14 @@
             url: "http://localhost:3000/api/reservation",
             method: "post",
             data: newReservation,
+        }).catch((error) => {
+            HttpStatusHandler(error.response.status);
         });
-        console.log(newReservation);
-        console.log(res.data);
         events.getEvents($currentData.roomId);
     }
+    const onAddAction = (data: User) => {
+        $addedAttendees = [...$addedAttendees, data];
+    };
 </script>
 
 <div class="mainContainer">
@@ -90,7 +94,7 @@
         </label>
         <div>
             Attendees:
-            <SearchBar data={$users} />
+            <SearchBar data={$users} {onAddAction} />
             <br />
             {#each $addedAttendees as attendee}
                 <div>
