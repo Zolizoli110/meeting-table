@@ -2,6 +2,8 @@ import { HttpCode, Injectable } from '@nestjs/common';
 import PrismaErrorHandler from 'src/prisma-errors';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { google, calendar_v3 } from 'googleapis';
+import { config } from '../config'
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class CalendarService {
@@ -16,8 +18,8 @@ export class CalendarService {
 
   private async initializeGoogleAuth() {
     const auth = new google.auth.GoogleAuth({
-      keyFile: 'C:/prog/meeting-table/backend/meeting-table-377209-3ca66e761039.json',
-      scopes: ['https://www.googleapis.com/auth/calendar'],
+      keyFile: config.serviceAccountAuth,
+      scopes: ["https://www.googleapis.com/auth/calendar"],
     });
 
     const client = await auth.getClient();
@@ -53,7 +55,7 @@ export class CalendarService {
       if (error.message.includes('Sync token is no longer valid')) {
         await this.fullCalendarListSync();
       } else {
-        throw new Error(`Failed to synchronize calendars: ${error}`);
+        throw new Error(error)
       }
     }
   }
@@ -94,7 +96,7 @@ export class CalendarService {
       }
       return syncToken.syncToken.toString();
     } catch (error) {
-      throw PrismaErrorHandler(error)
+      throw new Error(error)
     }
   }
 
@@ -108,7 +110,7 @@ export class CalendarService {
 
       return updatedSyncToken;
     } catch (error) {
-      throw PrismaErrorHandler(error);
+      throw PrismaErrorHandler(error)
     }
   }
 

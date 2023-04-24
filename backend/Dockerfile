@@ -1,10 +1,19 @@
-FROM prisma:latest
+FROM node:alpine
 
-WORKDIR /database
+WORKDIR /backend
 
-COPY prisma ./prisma/
-COPY .env ./
+COPY ./package*.json ./
 
-EXPOSE 5432
+RUN npm ci
 
-RUN npx prisma migrate dev --name init
+COPY . .
+
+EXPOSE 3000
+
+ENV NODE_ENV production
+
+RUN npx prisma generate
+
+RUN npm run build
+
+CMD ["node", "dist/main"]

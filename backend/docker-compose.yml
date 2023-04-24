@@ -7,8 +7,18 @@ services:
         ports:
             - "5432:5432"
         environment:
-            POSTGRES_USER: postgres
-            POSTGRES_PASSWORD: postgres
+            POSTGRES_USER: DB_USER
+            POSTGRES_PASSWORD: DB_PASSWORD
             POSTGRES_DB: meetingtable
+
+    backend:
+        build: .
+        container_name: meetingtable-backend
+        ports:
+            - "3000:3000"
+        env_file:
+            - .env
+        depends_on:
+            - postgres
 volumes:
     meeting_table_data:

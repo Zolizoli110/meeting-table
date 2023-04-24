@@ -9,6 +9,7 @@ export type Config = {
   callbackUrl: string,
   clientId: string,
   clientSecret: string,
+  serviceAccountAuth: string,
 }
 
 function readVal<T>(key: string, caster: (x: string) => T, fallback: T | undefined = undefined): T {
@@ -29,4 +30,5 @@ export const config: Config = {
   callbackUrl: readVal('CALLBACK_URL', String),
   clientId: readVal('CLIENT_ID', String),
   clientSecret: readVal('CLIENT_SECRET', String),
+  serviceAccountAuth: readVal('SERVICE_ACCOUNT_AUTH', String),
 }
