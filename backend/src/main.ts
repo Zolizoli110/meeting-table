@@ -24,9 +24,15 @@ async function bootstrap() {
     credentials: true
   });
 
+
   app.use(cookieParser())
 
   await app.listen(3000);
-  await calendar.calendarListSyncHandler();
+  sync(calendar); }
+
+async function sync(calendar: CalendarService) {
+  calendar.calendarListSyncHandler();
+  setTimeout(()=>{sync(calendar)}, 60000)
 }
+
 bootstrap();
