@@ -1,15 +1,14 @@
-import { HttpCode, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import PrismaErrorHandler from 'src/prisma-errors';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { google, calendar_v3 } from 'googleapis';
 import { config } from '../config'
-import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class CalendarService {
   private calendarApi: calendar_v3.Calendar;
   constructor(private readonly prisma: PrismaService) {
-    this.initializeGoogleAuth().then((client) => {
+    this.initializeGoogleAuth().then(() => {
       this.calendarApi = google.calendar({ version: 'v3' })
     });
   }
@@ -72,7 +71,7 @@ export class CalendarService {
   }
 
   private async incrementalCalendarListSync(syncToken: string) {
-    const { data: { items: calendars, nextSyncToken } } = await this.calendarApi.calendarList.list();
+    const { data: { items: calendars, nextSyncToken } } = await this.calendarApi.calendarList.list({syncToken});
 
     await this.updateCalendarListSyncToken(nextSyncToken);
 
@@ -200,11 +199,12 @@ export class CalendarService {
   private async fullEventSync(calendarId: string) {
     const { data: { items: events, nextSyncToken } } = await this.calendarApi.events.list({ calendarId });
 
+
     await this.updateEventSyncToken(calendarId, nextSyncToken);
 
     for await (const event of events) {
       if (!event.recurrence) {
-        await this.updateOrCreateEvent(calendarId, event);
+        await this.isAllDay(calendarId, event);
       } else {
         const { data: { items: instances, nextSyncToken } } = await this.calendarApi.events.instances({
           calendarId,
@@ -214,7 +214,7 @@ export class CalendarService {
         await this.updateEventSyncToken(calendarId, nextSyncToken);
 
         for await (const instance of instances) {
-          await this.updateOrCreateEvent(calendarId, instance);
+          await this.isAllDay(calendarId, instance);
         }
       }
     }
@@ -237,7 +237,7 @@ export class CalendarService {
         if (event.status == 'cancelled') {
           await this.deleteEvent(event.id);
         } else {
-          await this.updateOrCreateEvent(calendarId, event);
+          await this.isAllDay(calendarId, event);
         }
       } else {
         const { data: { items: instances, nextSyncToken } } = await this.calendarApi.events.instances({
@@ -252,7 +252,7 @@ export class CalendarService {
           if (instance.status == 'cancelled') {
             await this.deleteEvent(instance.id);
           } else {
-            await this.updateOrCreateEvent(calendarId, instance);
+            await this.isAllDay(calendarId, event);
           }
         }
       }
@@ -267,6 +267,60 @@ export class CalendarService {
     } catch (error) {
       throw PrismaErrorHandler(error);
     }
+  }
+
+  private async isAllDay(calendarId: string, event: calendar_v3.Schema$Event) {
+    if (!event.start.dateTime || !event.end.dateTime){
+      return await this.updateOrCreateAllDayEvent(calendarId, event)
+    } else {
+      return await this.updateOrCreateEvent(calendarId, event);
+    }
+  }
+
+  private async updateOrCreateAllDayEvent(calendarId: string, event: calendar_v3.Schema$Event) {
+    const date = new Date(event.start.date);
+    const start = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
+    const end = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 24, 0, 0);
+    const newEvent = await this.prisma.reservation.upsert({
+      where: {res_id: event.id},
+      update: {
+      res_name: event?.summary,
+      description: event?.description,
+      date_start: start.toISOString(),
+      date_end: end.toISOString(),
+      arranger: {
+        connectOrCreate: {
+          where: { user_email: event.organizer.email },
+          create: {
+            user_email: event.organizer.email,
+            role: { connect: { role_name: "guest" } }
+          },
+        }
+      },
+      users: {
+        connect: event.attendees?.map(attendee => ({ user_email: attendee.email }))
+      }
+    },
+    create: {
+      res_id: event.id,
+      res_name: event.summary,
+      description: event.description,
+      room: { connect: { room_id: calendarId } },
+      date_start: start.toISOString(),
+      date_end: end.toISOString(),
+      arranger: {
+        connectOrCreate: {
+          where: { user_email: event.organizer.email },
+          create: {
+            user_email: event.organizer.email,
+            role: { connect: { role_name: "guest" } }
+          },
+        }
+      },
+    },
+    });
+
+    return newEvent;
   }
 
   private async updateOrCreateEvent(calendarId: string, event: calendar_v3.Schema$Event) {
@@ -320,6 +374,8 @@ export class CalendarService {
       where: { room_id: calendarId },
       data: { syncToken }
     })
+
+    return updated;
   }
 
   private async createGoogleEvent(
@@ -370,9 +426,9 @@ export class CalendarService {
       INTERVAL: interval > 0 ? interval : '',
       COUNT: count > 0 ? count : '',
       UNTIL: until ? until.toISOString().replace(/[-:.]/g, '').split('T')[0] : '',
-      BYDAY: byDay.length > 0 ? byDay.join(',') : '',
-      BYMONTHDAY: byMonthDay.length > 0 ? byMonthDay.join(',') : '',
-      BYMONTH: byMonth.length > 0 ? byMonth.join(',') : ''
+      BYDAY: byDay?.length > 0 ? byDay.join(',') : '',
+      BYMONTHDAY: byMonthDay?.length > 0 ? byMonthDay.join(',') : '',
+      BYMONTH: byMonth?.length > 0 ? byMonth.join(',') : ''
     };
 
     const recurranceRule = Object.entries(ruleObj)
@@ -425,7 +481,9 @@ export class CalendarService {
       ? RDATE_date.map((date) => `RDATE;VALUE=DATE:${date.toISOString().split('T')[0].replace(/-/g, '')}`)
       : [];
 
-    const exdate = EXDATE_date.map((date) => `EXDATE;VALUE=DATE:${date.toISOString().split('T')[0].replace(/-/g, '')}`)
+    const exdate = EXDATE_date
+      ? EXDATE_date.map((date) => `EXDATE;VALUE=DATE:${date.toISOString().split('T')[1].replace(/-/g, '')}`)
+      : [];
 
     let rules = undefined;
 
@@ -488,7 +546,8 @@ export class CalendarService {
         timeZone,
         description,
         newOrganizer,
-        attendee
+        attendee,
+        rrule
       );
       const response = await this.calendarApi.events.insert({
         calendarId,
@@ -496,6 +555,8 @@ export class CalendarService {
       });
 
       await this.eventSyncHandler(calendarId);
+
+      return response;
     } catch (error) {
       throw new Error(`Failed to insert new event: ${error}`);
     }
@@ -577,6 +638,8 @@ export class CalendarService {
       });
 
       await this.eventSyncHandler(calendarId);
+
+      return response;
     } catch (error) {
       throw new Error(`Failed to update the event: ${error}`);
     }
