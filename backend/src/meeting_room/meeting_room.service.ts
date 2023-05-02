@@ -1,7 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import PrismaErrorHandler from './../prisma-errors';
 import { PrismaService } from '../prisma/prisma.service';
-import CreateMeetingRoomDto from './dto/create-meetingroom.dto';
 import UpdateMeetingRoomDto from './dto/update-meetingroom.dto';
 import { CalendarService } from 'src/calendar/calendar.service';
 

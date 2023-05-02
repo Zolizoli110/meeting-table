@@ -18,7 +18,9 @@ export class ReservationService {
   }
 
   async getAll() {
-    const allReservations = await this.prisma.reservation.findMany();
+    const allReservations = await this.prisma.reservation.findMany({
+      include: { users: true },
+    });
     return allReservations;
   }
 
@@ -26,6 +28,7 @@ export class ReservationService {
     try {
       const reservation = await this.prisma.reservation.findUniqueOrThrow({
         where: { res_id: id },
+        include: { users: true },
       });
       return reservation;
     } catch (error) {
