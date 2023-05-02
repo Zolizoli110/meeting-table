@@ -1,11 +1,9 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards, UsePipes } from '@nestjs/common';
-import { ParseIntPipe, ValidationPipe } from '@nestjs/common/pipes';
 import { Roles } from '../auth/roles.decorator';
 import CreateMeetingRoomDto from './dto/create-meetingroom.dto';
 import UpdateMeetingRoomDto from './dto/update-meetingroom.dto';
 import { MeetingroomService } from './meeting_room.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { AuthGuard } from '@nestjs/passport';
 
 @Controller('meetingroom')
 export class MeetingroomController {

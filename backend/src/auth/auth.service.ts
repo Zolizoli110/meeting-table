@@ -1,7 +1,5 @@
 import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
-import { Logger } from 'concurrently';
 import { CreateGuestDto } from 'src/guest/dto/create-guest.dto';
 import PrismaErrorHandler from 'src/prisma-errors';
 import { PrismaService } from 'src/prisma/prisma.service';

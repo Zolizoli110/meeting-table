@@ -199,7 +199,6 @@ export class CalendarService {
   private async fullEventSync(calendarId: string) {
     const { data: { items: events, nextSyncToken } } = await this.calendarApi.events.list({ calendarId });
 
-
     await this.updateEventSyncToken(calendarId, nextSyncToken);
 
     for await (const event of events) {
@@ -278,49 +277,68 @@ export class CalendarService {
   }
 
   private async updateOrCreateAllDayEvent(calendarId: string, event: calendar_v3.Schema$Event) {
-    const date = new Date(event.start.date);
-    const start = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
-    const end = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 24, 0, 0);
-    const newEvent = await this.prisma.reservation.upsert({
-      where: {res_id: event.id},
-      update: {
-      res_name: event?.summary,
-      description: event?.description,
-      date_start: start.toISOString(),
-      date_end: end.toISOString(),
-      arranger: {
-        connectOrCreate: {
-          where: { user_email: event.organizer.email },
-          create: {
-            user_email: event.organizer.email,
-            role: { connect: { role_name: "guest" } }
+    try{
+      const date = new Date(event.start.date);
+      const start = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
+      const end = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 24, 0, 0);
+      const newEvent = await this.prisma.reservation.upsert({
+        where: {res_id: event.id},
+        update: {
+          res_name: event?.summary,
+          description: event?.description,
+          date_start: start.toISOString(),
+          date_end: end.toISOString(),
+          arranger: {
+            connectOrCreate: {
+              where: { user_email: event.creator.email },
+              create: {
+                user_email: event.creator.email,
+                role: { connect: { role_name: "guest" } }
+              },
+            }
           },
-        }
-      },
-      users: {
-        connect: event.attendees?.map(attendee => ({ user_email: attendee.email }))
-      }
-    },
-    create: {
-      res_id: event.id,
-      res_name: event.summary,
-      description: event.description,
-      room: { connect: { room_id: calendarId } },
-      date_start: start.toISOString(),
-      date_end: end.toISOString(),
-      arranger: {
-        connectOrCreate: {
-          where: { user_email: event.organizer.email },
-          create: {
-            user_email: event.organizer.email,
-            role: { connect: { role_name: "guest" } }
+          users: {
+            connectOrCreate: event.attendees?.map(attendee=> ({
+              where: { user_email: attendee.email },
+              create: {
+                user_email: attendee.email,
+                role: { connect: { role_name: "guest" }},
+              }
+            }))
           },
-        }
-      },
-    },
-    });
+        },
+        create: {
+          res_id: event.id,
+          res_name: event.summary,
+          description: event.description,
+          room: { connect: { room_id: calendarId } },
+          date_start: start.toISOString(),
+          date_end: end.toISOString(),
+          arranger: {
+            connectOrCreate: {
+              where: { user_email: event.creator.email },
+              create: {
+                user_email: event.creator.email,
+                role: { connect: { role_name: "guest" } }
+              },
+            }
+          },
+          users: {
+            connectOrCreate: event.attendees?.map(attendee=> ({
+              where: { user_email: attendee.email },
+              create: {
+                user_email: attendee.email,
+                role: { connect: { role_name: "guest" }},
+              }
+            }))
+          },
+        },
+      });
+      return newEvent;
+    } catch (error) {
+      return error;
+    }
 
-    return newEvent;
   }
 
   private async updateOrCreateEvent(calendarId: string, event: calendar_v3.Schema$Event) {
@@ -334,16 +352,22 @@ export class CalendarService {
           date_end: event?.end.dateTime,
           arranger: {
             connectOrCreate: {
-              where: { user_email: event.organizer.email },
+              where: { user_email: event.creator.email},
               create: {
-                user_email: event.organizer.email,
+                user_email: event.creator.email,
                 role: { connect: { role_name: "guest" } }
               },
             }
           },
           users: {
-            connect: event.attendees?.map(attendee => ({ user_email: attendee.email }))
-          }
+            connectOrCreate: event.attendees?.map(attendee=> ({
+              where: { user_email: attendee.email },
+              create: {
+                user_email: attendee.email,
+                role: { connect: { role_name: "guest" }},
+              }
+            }))
+          },
         },
         create: {
           res_id: event.id,
@@ -354,12 +378,21 @@ export class CalendarService {
           date_end: event.end.dateTime,
           arranger: {
             connectOrCreate: {
-              where: { user_email: event.organizer.email },
+              where: { user_email: event.creator.email },
               create: {
-                user_email: event.organizer.email,
+                user_email: event.creator.email,
                 role: { connect: { role_name: "guest" } }
               },
             }
+          },
+          users: {
+            connectOrCreate: event.attendees?.map(attendee=> ({
+              where: { user_email: attendee.email },
+              create: {
+                user_email: attendee.email,
+                role: { connect: { role_name: "guest" }},
+              }
+            }))
           },
         },
       });

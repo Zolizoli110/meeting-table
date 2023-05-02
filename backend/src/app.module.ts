@@ -2,9 +2,8 @@ import { MiddlewareConsumer, Module, NestModule, ValidationPipe } from '@nestjs/
 import { MeetingroomModule } from './meeting_room/meeting_room.module';
 import { ReservationModule } from './reservation/reservation.module';
 import { GuestModule } from './guest/guest.module';
-import { APP_GUARD, APP_PIPE } from '@nestjs/core';
+import { APP_PIPE } from '@nestjs/core';
 import { LoggerMiddleware } from './logger.middleware';
-import { RolesGuard } from './auth/guards/roles.guard';
 import { AuthModule } from './auth/auth.module';
 import { CalendarModule } from './calendar/calendar.module';
 import { PrismaModule } from './prisma/prisma.module';
