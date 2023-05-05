@@ -11,7 +11,7 @@
 1. Másold le a git repository-t a gépedre
 
 ```console
-git clone ***
+git clone https://github.com/Zolizoli110/meeting-table.git
 ```
 
 2. Menj a projekt mappába
