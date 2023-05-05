@@ -26,7 +26,7 @@ cd meeting-table
 npm run install
 ```
 
->Ezzel telepítheted a backend és frontend követelményeit a fejlesztéshez.  
+>Ezzel telepítheted a backend, web és android követelményeit a fejlesztéshez.  
 
 >Ha nem kívánod letölten minegyikhez akkor a kívánt résznél futtasd az `npm install` parancsot.
   
