@@ -16,7 +16,14 @@
     }
 </script>
 
-<input type="search" bind:value={searchValue} on:input={suggestData} />
+<div class="searchBar">
+    <input
+        style="width: 100%;"
+        type="search"
+        bind:value={searchValue}
+        on:input={suggestData}
+    />
+</div>
 {#if searchValue}
     <ul class="suggestions">
         {#each suggestions as suggestion}
@@ -24,3 +31,10 @@
         {/each}
     </ul>
 {/if}
+
+<style>
+    .searchBar {
+        width: 100%;
+        border: 1px solid black;
+    }
+</style>

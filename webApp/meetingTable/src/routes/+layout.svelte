@@ -2,7 +2,7 @@
     import axios from "axios";
     import "../app.css";
     import Sidebar from "../components/navigation/Sidebar.svelte";
-    import { users, meetingRooms } from "../stores/api.store";
+    import { users, meetingRooms, loggedInUser } from "../stores/api.store";
     import type { User } from "../types";
     import { HttpStatusHandler } from "../utils/errorHandler";
 
@@ -37,11 +37,17 @@
             });
     }
     const allPromises = Promise.all([getRooms(), getAllUsers()]);
+    let isLoggedIn = false;
+    $: {
+        isLoggedIn = $loggedInUser;
+    }
 </script>
 
 {#await allPromises then}
     <div class="mainContainer">
-        <Sidebar />
+        {#if isLoggedIn}
+            <Sidebar />
+        {/if}
         <div class="page">
             <slot />
         </div>

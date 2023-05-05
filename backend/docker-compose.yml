@@ -6,10 +6,8 @@ services:
         hostname: postgres
         ports:
             - "5432:5432"
-        environment:
-            POSTGRES_USER: DB_USER
-            POSTGRES_PASSWORD: DB_PASSWORD
-            POSTGRES_DB: meetingtable
+        env_file:
+            .env
 
     backend:
         build: .

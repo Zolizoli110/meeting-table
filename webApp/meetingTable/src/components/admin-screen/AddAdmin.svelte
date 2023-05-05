@@ -21,16 +21,23 @@
 
 <div class="container">
     <div class="searchContainer">
-        <label>
+        <div class="container2">
             Type in a user's name to give admin privileges
             <br />
             <SearchBar data={$users} {onAddAction} />
-        </label>
+        </div>
     </div>
 </div>
 
 <style>
     .container {
-        background-color: red;
+        border: 1px solid black;
+        border-radius: 7px;
+        padding: 5px;
+    }
+    .container2 {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
     }
 </style>

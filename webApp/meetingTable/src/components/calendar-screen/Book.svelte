@@ -72,21 +72,37 @@
     <form class="formContainer" on:submit|preventDefault={handleSubmit}>
         <label>
             Title:
-            <input bind:value={$currentData.title} type="text" />
+            <input
+                class="inputField"
+                bind:value={$currentData.title}
+                type="text"
+            />
         </label>
         <label>
             Description:
-            <input bind:value={$currentData.description} type="text" />
+            <input
+                class="inputField"
+                bind:value={$currentData.description}
+                type="text"
+            />
         </label>
         <label>
             Timespan:
-            <select bind:value={$currentData.timeStart} name="date_start">
+            <select
+                class="inputField"
+                bind:value={$currentData.timeStart}
+                name="date_start"
+            >
                 {#each times as time}
                     <option value={time}>{time}</option>
                 {/each}
             </select>
             <span> -- </span>
-            <select bind:value={$currentData.timeEnd} name="date_end">
+            <select
+                class="inputField"
+                bind:value={$currentData.timeEnd}
+                name="date_end"
+            >
                 {#each times as time}
                     <option value={time}>{time}</option>
                 {/each}
@@ -97,7 +113,7 @@
             <SearchBar data={$users} {onAddAction} />
             <br />
             {#each $addedAttendees as attendee}
-                <div>
+                <div class="addedUserContainer">
                     <p>{attendee.user_email}</p>
                     <button
                         on:click={() =>
@@ -108,7 +124,7 @@
                 </div>
             {/each}
         </div>
-        <button type="submit">Book Reservation</button>
+        <button class="submitButton" type="submit">Book Reservation</button>
     </form>
 </div>
 
@@ -116,11 +132,25 @@
     .formContainer {
         display: flex;
         flex-direction: column;
+        gap: 10px;
     }
     #title {
         font-size: 2rem;
+        margin-bottom: 20px;
     }
     .timeRangeContainer {
         display: flex;
+    }
+    .inputField {
+        border: 1px solid black;
+    }
+    .addedUserContainer {
+        display: flex;
+        justify-content: space-between;
+    }
+    .submitButton {
+        margin-top: 20px;
+        border: 1px solid black;
+        border-radius: 3px;
     }
 </style>
