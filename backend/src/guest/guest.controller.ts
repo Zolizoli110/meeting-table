@@ -13,17 +13,20 @@ export class GuestController {
   ) { }
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   getAll() {
     return this.guestService.getAll();
   }
 
   @Get(':email')
+  @UseGuards(JwtAuthGuard)
   getOne(@Param('email') email: string) {
     return this.guestService.getOne(email);
   }
 
   @Post()
   @Roles('admin')
+  @UseGuards(JwtAuthGuard, RolesGuard)
   create(@Body() body: CreateGuestDto) {
     return this.guestService.create(body);
   }
@@ -37,6 +40,7 @@ export class GuestController {
 
   @Delete(':email')
   @Roles('admin')
+  @UseGuards(JwtAuthGuard, RolesGuard)
   delete(@Param('email') email: string) {
     return this.guestService.delete(email);
   }
