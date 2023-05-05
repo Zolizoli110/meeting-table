@@ -1,11 +1,7 @@
 <script lang="ts">
     // @ts-nocheck
     import Calendar from "@event-calendar/core";
-    import List from "@event-calendar/list";
     import TimeGrid from "@event-calendar/time-grid";
-    import DayGrid from "@event-calendar/day-grid";
-    import axios from "axios";
-    import type { MeetingRoom } from "../../types";
     import {
         meetingRooms,
         events,
@@ -45,11 +41,17 @@
         <!-- meeting room select -->
         <div class="selectContainer">
             <label for="meetingRoomSelect">Select a meeting room: </label>
-            <select bind:value={$currentData.roomId} id="meetingRoomSelect">
-                {#each $meetingRooms as room}
-                    <option value={room.room_id}>{room.name}</option>
-                {/each}
-            </select>
+            <div class="dropdown_container">
+                <select
+                    style="width: 100%;"
+                    bind:value={$currentData.roomId}
+                    id="meetingRoomSelect"
+                >
+                    {#each $meetingRooms as room}
+                        <option value={room.room_id}>{room.name}</option>
+                    {/each}
+                </select>
+            </div>
         </div>
         <!-- displaying calendar based on selected room -->
         {#if hasMounted}
@@ -77,8 +79,13 @@
     .selectContainer {
         display: flex;
         flex-direction: column;
+        gap: 5px;
     }
     .calendarBlock {
         overflow-x: scroll;
+    }
+    .dropdown_container {
+        border: 1px solid black;
+        width: 100%;
     }
 </style>

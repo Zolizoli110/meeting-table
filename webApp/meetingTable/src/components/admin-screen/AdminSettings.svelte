@@ -8,13 +8,19 @@
 </script>
 
 <div class="container">
-    <AddAdmin />
-    <MeetingRoomsInfo />
+    <div>
+        <AddAdmin />
+    </div>
+    <div>
+        <MeetingRoomsInfo />
+    </div>
 </div>
 
 <style>
     .container {
+        height: 100vh;
         display: flex;
-        justify-content: space-between;
+        justify-content: space-evenly;
+        align-items: center;
     }
 </style>

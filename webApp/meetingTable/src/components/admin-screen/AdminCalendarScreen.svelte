@@ -11,4 +11,6 @@
     };
 </script>
 
-<Calendar {plugins} {options} />
+<div style="margin: 15px;">
+    <Calendar {plugins} {options} />
+</div>
