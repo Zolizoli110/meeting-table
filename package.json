@@ -1,0 +1,10 @@
+{
+  "name": "meeting-table",
+  "version": "0.0.1",
+  "description": "",
+  "scripts": {
+    "install": "cd ./backend/ && npm install && cd ../webApp/meetingTable/ && npm install"
+  },
+  "author": "",
+  "license": "UNLICENSED"
+}

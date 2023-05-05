@@ -47,20 +47,6 @@ export class MeetingroomService {
         this.calendarService.subscribeToCalendar(calendarId);
     }
 
-    async update(id: string, body: UpdateMeetingRoomDto) {
-        try {
-            const meetingRoom = await this.prisma.meetingRoom.update({
-                where: { room_id: id },
-                data: {
-                    ...body
-                }
-            });
-            return meetingRoom;
-        } catch (error) {
-            throw PrismaErrorHandler(error);
-        }
-    }
-
     async delete(calendarId: string) {
         this.calendarService.unsubscribeFromCalendar(calendarId);
     }
