@@ -21,8 +21,22 @@ export class MeetingroomService {
         try {
             const meetingRoom = await this.prisma.meetingRoom.findUniqueOrThrow({
                 where: { room_id: id },
-                include: { reservations: true }
+                include:
+                {
+                    reservations:
+                    {
+                        include:
+                        {
+                            users:
+                            {
+                                select:
+                                    { user_email: true }
+                            }
+                        }
+                    }
+                }
             })
+            console.log(meetingRoom.reservations[0].users)
             return meetingRoom;
         } catch (error) {
             throw PrismaErrorHandler(error);

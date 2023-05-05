@@ -28,12 +28,15 @@ export class ReservationService {
     try {
       const reservation = await this.prisma.reservation.findUniqueOrThrow({
         where: { res_id: id },
-        include: { users: true },
+        include: {
+          users: true
+        }
       });
       return reservation;
     } catch (error) {
       throw PrismaErrorHandler(error);
-    } }
+    }
+  }
 
   async create(body: CreateReservationDto) {
     if (!body.userEmails) {
@@ -65,7 +68,7 @@ export class ReservationService {
           : undefined,
         body.EXDATE_date
           ? body.EXDATE_date.map((date) => { return new Date(date) })
-          :undefined
+          : undefined
       )
     }
   }

@@ -19,6 +19,6 @@ export class ApiController {
     res.flushHeaders();
 
     this.apiService.handleClients(res, clientId, roomId)
-    this.apiService.sendEvent(roomId, 'greet', `greetings client ${clientId}`);
+    this.apiService.sendEvent(roomId, 'open', `greetings client ${clientId}`);
   }
 }
