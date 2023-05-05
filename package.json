@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "",
   "scripts": {
-    "install": "cd ./backend/ && npm install && cd ../webApp/meetingTable/ && npm install"
+    "install": "cd ./backend/ && npm install && cd ../webApp/meetingTable/ && npm install && cd ../mobile/MeetingTable/ && npm install"
   },
   "author": "",
   "license": "UNLICENSED"
