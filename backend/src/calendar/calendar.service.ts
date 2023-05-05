@@ -39,7 +39,7 @@ export class CalendarService {
   }
 
 
-  //-----CALENDAR_LIST-----\\
+  //-----CALENDARS-----\\
 
   async calendarListSyncHandler() {
     try {
